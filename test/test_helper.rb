@@ -1,3 +1,5 @@
+ENV["PINGER_DB"] = "sqlite://test/db/pinger.db"
+
 gem "minitest"
 require "minitest/autorun"
 require "minitest/should"
