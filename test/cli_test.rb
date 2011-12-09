@@ -61,7 +61,28 @@ class CliTest < MiniTest::Unit::TestCase
     should "not allow duplicate domains to be added" do
       Pinger::Domain.find_or_create(:domain => "example.com")
       out = cmd("add example.com")
-      assert_equal "example.com already exists in the pinger database", out
+      assert_equal "example.com already exists in pinger", out
+    end
+    
+  end
+
+  context "When removing domains" do
+    
+    def setup
+      @domain = Pinger::Domain.find_or_create(:domain => "example.com")
+    end
+    
+    should "remove domain from database" do
+      assert !Pinger::Domain.find(:domain => "example.com").nil?
+      out = cmd("rm example.com")
+      assert Pinger::Domain.find(:domain => "example.com").nil?
+      assert_equal "example.com was successfully removed from pinger", out
+    end
+    
+    should "not allow non-existant domains to be removed" do
+      Pinger::Domain.dataset.destroy
+      out = cmd("rm example.com")
+      assert_equal "example.com doesn't exist in pinger", out
     end
     
   end

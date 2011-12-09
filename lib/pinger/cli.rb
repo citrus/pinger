@@ -50,19 +50,28 @@ HELP
        
       def add(domain)
         if Pinger::Domain.find(:domain => domain)
-          puts "#{domain} already exists in the pinger database"
+          puts "#{domain} already exists in pinger"
         else     
           record = Pinger::Domain.new(:domain => domain)
           if record.save
             puts "#{domain} was successfully added to pinger"
           else
-            puts "Sorry, #{domain} could not be added to pinger"
+            puts "#{domain} could not be added to pinger"
           end
         end
       end
       
-      def remove(args)
-        puts "remove #{args.shift}"
+      def rm(domain)
+        if record = Pinger::Domain.find(:domain => domain)
+          if record.destroy
+            puts "#{domain} was successfully removed from pinger"
+          else
+            puts "#{domain} could not be removed from pinger"
+          end
+        else     
+          puts "#{domain} doesn't exist in pinger"
+        end
+
       end
       
       def ping(args)
