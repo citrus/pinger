@@ -41,7 +41,7 @@ module Pinger
       unless db.table_exists?(:pings)
         db.create_table :pings do
           primary_key :id
-          foreign_key :domain_id, :domains
+          foreign_key :domain_id, :domains, :key => :id
           String      :status
           column      :response, :text
           DateTime    :created_at
