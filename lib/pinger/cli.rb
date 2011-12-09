@@ -9,7 +9,6 @@ module Pinger
     end
   
     def self.run(args)
-      puts "ARGS #{args}"
       return help if args.empty?
       command = args.first
       raise "Invalid Command" unless Pinger::CLI.commands.include?(command)      
@@ -41,9 +40,14 @@ HELP
       extend self
         
       def list
-        Domain.all
+        info = []
+        Pinger::Domain.dataset.each do |i|
+          info << i.domain
+        end
+        info << "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`" if info.empty?
+        puts info.join("\n")
       end
-                
+       
       def add(args)
         puts "add #{args.shift}"
         #site = Domain.new(args.shift, args)

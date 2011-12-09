@@ -6,7 +6,7 @@ module Kernel
     out = StringIO.new
     $stdout = out
     yield
-    return out.string
+    return out.string.sub(/\n$/, '')
   ensure
     $stdout = STDOUT
   end

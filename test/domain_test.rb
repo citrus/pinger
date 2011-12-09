@@ -2,6 +2,10 @@ require "test_helper"
 
 class DomainTest < MiniTest::Unit::TestCase
 
+  def setup
+    Pinger::Domain.dataset.destroy
+  end
+
   should "be a sequel model" do        
     assert Pinger::Domain.ancestors.include?(Sequel::Model)
   end
@@ -23,7 +27,7 @@ class DomainTest < MiniTest::Unit::TestCase
   context "An existing domain" do
     
     def setup
-      @domain = Pinger::Domain.create(:domain => "example.com")
+      @domain = Pinger::Domain.find_or_create(:domain => "example.com")
     end
     
     should "be deleted" do

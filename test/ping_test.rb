@@ -1,11 +1,11 @@
 require "test_helper"
 
+def domain
+  @domain ||= Pinger::Domain.find_or_create(:domain => "example.com")
+end
+
 class PingTest < MiniTest::Unit::TestCase
 
-  def setup
-    @domain = Pinger::Domain.find_or_create(:domain => "example.com")
-  end
-  
   should "be a sequel model" do        
     assert Pinger::Ping.ancestors.include?(Sequel::Model)
   end
@@ -19,7 +19,7 @@ class PingTest < MiniTest::Unit::TestCase
   end
   
   should "save domain to database" do
-    ping = Pinger::Ping.new(:domain_id => @domain.id)
+    ping = Pinger::Ping.new(:domain_id => domain.id)
     assert ping.save
     assert_equal Time.now.to_i, ping.created_at.to_i
   end
@@ -27,8 +27,7 @@ class PingTest < MiniTest::Unit::TestCase
   context "An existing ping" do
     
     def setup
-      @domain = Pinger::Domain.find_or_create(:domain => "sub.example.com")
-      @ping = Pinger::Ping.create(:domain_id => @domain.id)
+      @ping = Pinger::Ping.create(:domain_id => domain.id)
     end
     
     should "be deleted" do
