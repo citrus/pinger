@@ -48,12 +48,17 @@ HELP
         puts info.join("\n")
       end
        
-      def add(args)
-        puts "add #{args.shift}"
-        #site = Domain.new(args.shift, args)
-        #saved = site.save
-        #puts "Saved? #{saved}"
-        #saved
+      def add(domain)
+        if Pinger::Domain.find(:domain => domain)
+          puts "#{domain} already exists in the pinger database"
+        else     
+          record = Pinger::Domain.new(:domain => domain)
+          if record.save
+            puts "#{domain} was successfully added to pinger"
+          else
+            puts "Sorry, #{domain} could not be added to pinger"
+          end
+        end
       end
       
       def remove(args)
