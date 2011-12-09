@@ -5,15 +5,15 @@ module Pinger
   module CLI
   
     def self.commands
-      %w(init add remove ping show).map(&:to_sym)
+      %w(list add rm ping show)
     end
   
     def self.run(args)
+      puts "ARGS #{args}"
       return help if args.empty?
-      command = (args.shift || "").to_sym
-      puts "running #{command}"
-      raise "Invalid Command" unless Pinger::CLI.commands.include?(command)
-      Commands.send(command, args)
+      command = args.first
+      raise "Invalid Command" unless Pinger::CLI.commands.include?(command)      
+      Commands.send(*args)
     end
     
     def self.help
@@ -27,6 +27,7 @@ Daemon:
 
 Domains:
 
+  pinger list          # Lists all domains in pinger's database
   pinger add DOMAIN    # Add a domain to pinger's database
   pinger remove DOMAIN # Remove the domain from pinger's database
   pinger ping DOMAIN   # Test the domain
@@ -38,11 +39,11 @@ HELP
     module Commands
           
       extend self
-          
-      def init(args)
-        Site.init!
+        
+      def list
+        Domain.all
       end
-          
+                
       def add(args)
         puts "add #{args.shift}"
         #site = Domain.new(args.shift, args)
