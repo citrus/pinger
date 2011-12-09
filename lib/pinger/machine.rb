@@ -1,3 +1,5 @@
+require 'eventmachine'
+
 module Pinger
 
   module Machine

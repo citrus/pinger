@@ -1,13 +1,5 @@
 #! /usr/bin/env ruby
 $:.push File.expand_path("../../lib", __FILE__)
 
-require 'pinger/cli'
-
-puts Pinger::CLI.run(ARGV)
-
-
-
-
-
-
-
+require "pinger/cli"
+Pinger::CLI.run(ARGV)
