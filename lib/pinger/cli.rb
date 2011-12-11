@@ -12,7 +12,12 @@ module Pinger
       return help if args.empty?
       command = args.first
       raise "Invalid Command" unless Pinger::CLI.commands.include?(command)      
+      return usage(command) unless args.length == 2 || command == "list" 
       Commands.send(*args)
+    end
+
+    def self.usage(command)
+      puts "Usage: pinger #{command} DOMAIN"
     end
     
     def self.help
@@ -48,7 +53,7 @@ HELP
         puts info.join("\n")
       end
        
-      def add(domain)
+      def add(domain=nil)
         if Pinger::Domain.find(:domain => domain)
           puts "#{domain} already exists in pinger"
         else     
@@ -61,7 +66,7 @@ HELP
         end
       end
       
-      def rm(domain)
+      def rm(domain=nil)
         if record = Pinger::Domain.find(:domain => domain)
           if record.destroy
             puts "#{domain} was successfully removed from pinger"
@@ -74,12 +79,12 @@ HELP
 
       end
       
-      def ping(args)
+      def ping(domain=nil)
         puts "ping ping bling bling"
       end
       
-      def show(args)
-        puts "show me #{args.shift}"
+      def show(domain=nil)
+        puts "show me #{domain}"
       end
     
     end

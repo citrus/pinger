@@ -1,4 +1,5 @@
 require "test_helper"
+require "pinger/cli"
 
 def bin
   @bin ||= File.expand_path("../../bin/pinger", __FILE__)
@@ -25,6 +26,13 @@ class CliTest < MiniTest::Unit::TestCase
     should "list domains and show empty message" do
       out = cmd("list")
       assert_equal "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`", out
+    end
+
+    should "show usage for all commands except list if no argument is given" do
+      Pinger::CLI.commands.each do |command|
+        next if command == "list"
+        assert_equal "Usage: pinger #{command} DOMAIN", cmd(command)
+      end
     end
     
     context "With some existing domains" do
@@ -85,6 +93,19 @@ class CliTest < MiniTest::Unit::TestCase
       assert_equal "example.com doesn't exist in pinger", out
     end
     
+  end
+  
+  context "When showing a domain" do
+  
+    def setup
+      @domain = Pinger::Domain.find_or_create(:domain => "example.com")
+    end
+
+    should "show domain" do
+      out = cmd("show example.com")
+      puts out.inspect
+    end 
+
   end
 
 end
