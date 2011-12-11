@@ -8,12 +8,9 @@ module Pinger
   class << self
     
     def connection
+      return @connection if @connection
       begin
-        @connection ||= if ENV["PINGER_DB"].nil?
-          Sequel.sqlite
-        else
-          Sequel.connect ENV["PINGER_DB"]
-        end
+        @connection = Sequel.connect ENV["PINGER_DB"]
       rescue Exception => e
         puts "*" * 88
         puts "Error while connecting to database"
