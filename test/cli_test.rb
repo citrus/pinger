@@ -101,9 +101,15 @@ class CliTest < MiniTest::Unit::TestCase
       @domain = Pinger::Domain.find_or_create(:domain => "example.com")
     end
 
+    should "show warning when domain doesn't exist" do
+      out = cmd("show nonexistant.example.com")
+      assert_equal "nonexistant.example.com hasn't been added to pinger. Add it with `pinger add nonexistant.example.com`", out 
+    end
+
     should "show domain" do
       out = cmd("show example.com")
-      puts out.inspect
+      assert_match /^example.com\n/, out
+      assert_match Regexp.new("#{@domain.pings.count} pings since #{@domain.created_at}"), out
     end 
 
   end

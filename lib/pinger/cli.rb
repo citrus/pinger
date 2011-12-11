@@ -84,7 +84,14 @@ HELP
       end
       
       def show(domain=nil)
-        puts "show me #{domain}"
+	record = Pinger::Domain.find(:domain => domain)
+        return puts "#{domain} hasn't been added to pinger. Add it with `pinger add #{domain}`" if record.nil?  
+        out = <<OUT
+#{domain}
+#{'-' * (domain.length + 3)}
+#{record.pings.count} pings since #{record.created_at}
+OUT
+        puts out
       end
     
     end
