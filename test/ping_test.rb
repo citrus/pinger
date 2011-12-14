@@ -20,8 +20,9 @@ class PingTest < MiniTest::Unit::TestCase
   
   should "save domain to database" do
     ping = Pinger::Ping.new(:domain_id => domain.id)
+    time = Time.now.to_i
     assert ping.save
-    assert_equal Time.now.to_i, ping.created_at.to_i
+    assert_equal time, ping.created_at.to_i
   end
   
   context "An existing ping" do

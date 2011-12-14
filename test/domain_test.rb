@@ -20,8 +20,9 @@ class DomainTest < MiniTest::Unit::TestCase
   
   should "save domain to database" do
     domain = Pinger::Domain.new(:domain => "example.com")
+    time = Time.now.to_i
     assert domain.save
-    assert_equal Time.now.to_i, domain.created_at.to_i
+    assert_equal time, domain.created_at.to_i
   end
   
   context "An existing domain" do
