@@ -37,6 +37,12 @@ class CliTest < MiniTest::Unit::TestCase
     assert Pinger::CLI::COMMANDS.is_a?(Array)
   end
 
+  should "ensure all commands are defined in Pinger::Commands module" do
+    Pinger::CLI::COMMANDS.each do |command|
+      assert Pinger::CLI::Commands.respond_to?(command), "Pinger::Commands should respond to #{command}"
+    end
+  end
+
   context "When listing domains" do
     
     def setup

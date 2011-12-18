@@ -9,42 +9,36 @@ module Pinger
     DOMAIN_COMMANDS  = %w(add rm show ping) 
     COMMANDS         = SERVER_COMMANDS + UTILITY_COMMANDS + DOMAIN_COMMANDS
  
-    def self.run(args)
-      return help if args.empty?
-      command = args.first
-      raise "Invalid Command" unless COMMANDS.include?(command)      
-      return usage(command) if args.length != 2 && DOMAIN_COMMANDS.include?(command)
-      puts Commands.send(*args)
+    def self.run(command, args)
+      command = :help unless COMMANDS.include?(command)      
+      return usage(command) if args.length != 1 && DOMAIN_COMMANDS.include?(command)
+      puts Commands.send(command, *args)
     end
 
     def self.usage(command)
       puts "Usage: pinger #{command} DOMAIN"
     end
-    
-    def self.help
-      puts <<HELP
-Welcome to pinger! Here's the rundown:
-
-Daemon:
-
-  pinger start # Starts the pinger daemon
-  pinger stop  # Stops the pinger daemon
-
-Domains:
-
-  pinger list          # Lists all domains in pinger's database
-  pinger add DOMAIN    # Add a domain to pinger's database
-  pinger remove DOMAIN # Remove the domain from pinger's database
-  pinger ping DOMAIN   # Test the domain
-  pinger show DOMAIN   # Show details for a domain
-        
-HELP
-    end
-    
+       
     module Commands
           
       extend self
-        
+
+      def start
+
+      end
+
+      def stop
+
+      end
+
+      def status
+
+      end
+
+      def stats
+        "#{Pinger::Ping.count} pings on #{Pinger::Domain.count} domains"     
+      end
+
       def list
         info = []
         Pinger::Domain.dataset.each do |i|
@@ -98,6 +92,26 @@ OUT
           [ ping.created_at, ping.status, ping.response_time  ].join(", ")
         }.join("\n")
         out
+      end
+ 
+      def self.help
+        out = <<HELP
+Welcome to pinger! Here's the rundown:
+
+Daemon:
+
+  pinger start # Starts the pinger daemon
+  pinger stop  # Stops the pinger daemon
+
+Domains:
+
+  pinger list          # Lists all domains in pinger's database
+  pinger add DOMAIN    # Add a domain to pinger's database
+  pinger remove DOMAIN # Remove the domain from pinger's database
+  pinger ping DOMAIN   # Test the domain
+  pinger show DOMAIN   # Show details for a domain
+        
+HELP
       end
       
       private
