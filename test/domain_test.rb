@@ -31,6 +31,10 @@ class DomainTest < MiniTest::Unit::TestCase
       @domain = Pinger::Domain.find_or_create(:domain => "example.com")
     end
     
+    should "return url" do
+      assert_equal "http://example.com", @domain.url
+    end
+
     should "be deleted" do
       count = Pinger::Domain.count
       @domain.destroy

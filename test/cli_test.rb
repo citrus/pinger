@@ -11,6 +11,10 @@ def cmd(command)
   end
 end
 
+def setup_domain(domain="example.com")
+  @domain ||= Pinger::Domain.find_or_create(:domain => domain) 
+end
+
 class CliTest < MiniTest::Unit::TestCase
   
   should "be executable" do
@@ -67,7 +71,7 @@ class CliTest < MiniTest::Unit::TestCase
     end
     
     should "not allow duplicate domains to be added" do
-      Pinger::Domain.find_or_create(:domain => "example.com")
+      setup_domain
       out = cmd("add example.com")
       assert_equal "example.com already exists in pinger", out
     end
@@ -77,7 +81,7 @@ class CliTest < MiniTest::Unit::TestCase
   context "When removing domains" do
     
     def setup
-      @domain = Pinger::Domain.find_or_create(:domain => "example.com")
+      setup_domain 
     end
     
     should "remove domain from database" do
@@ -98,7 +102,7 @@ class CliTest < MiniTest::Unit::TestCase
   context "When showing a domain" do
   
     def setup
-      @domain = Pinger::Domain.find_or_create(:domain => "example.com")
+      setup_domain 
     end
 
     should "show warning when domain doesn't exist" do
@@ -114,4 +118,23 @@ class CliTest < MiniTest::Unit::TestCase
 
   end
 
+  context "When pinging a domain" do
+
+    def setup
+      setup_domain
+    end
+
+    should "show warning when domain doesn't exist" do
+      out = cmd("show nonexistant.example.com")
+      assert_equal "nonexistant.example.com hasn't been added to pinger. Add it with `pinger add nonexistant.example.com`", out
+    end
+
+    should "ping domain" do
+      outs = cmd("ping example.com").split("\n")
+      assert_equal "pinging example.com...", outs.first
+    end
+
+  end
+
 end
+

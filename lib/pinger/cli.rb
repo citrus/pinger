@@ -13,7 +13,7 @@ module Pinger
       command = args.first
       raise "Invalid Command" unless Pinger::CLI.commands.include?(command)      
       return usage(command) unless args.length == 2 || command == "list" 
-      Commands.send(*args)
+      puts Commands.send(*args)
     end
 
     def self.usage(command)
@@ -50,52 +50,64 @@ HELP
           info << i.domain
         end
         info << "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`" if info.empty?
-        puts info.join("\n")
+        info.join("\n")
       end
        
       def add(domain=nil)
-        if Pinger::Domain.find(:domain => domain)
-          puts "#{domain} already exists in pinger"
-        else     
-          record = Pinger::Domain.new(:domain => domain)
-          if record.save
-            puts "#{domain} was successfully added to pinger"
-          else
-            puts "#{domain} could not be added to pinger"
-          end
-        end
+        return "#{domain} already exists in pinger" if find_domain(domain) 
+        record = Pinger::Domain.new(:domain => domain)
+        if record.save
+          "#{domain} was successfully added to pinger"
+        else
+          "#{domain} could not be added to pinger"
+        end 
       end
       
       def rm(domain=nil)
         if record = Pinger::Domain.find(:domain => domain)
           if record.destroy
-            puts "#{domain} was successfully removed from pinger"
+            "#{domain} was successfully removed from pinger"
           else
-            puts "#{domain} could not be removed from pinger"
+            "#{domain} could not be removed from pinger"
           end
         else     
-          puts "#{domain} doesn't exist in pinger"
+          "#{domain} doesn't exist in pinger"
         end
 
       end
       
       def ping(domain=nil)
-        puts "ping ping bling bling"
+        record = find_domain(domain)
+        return domain_not_found(domain) if record.nil?
+        puts "pinging #{domain}..."
+        ping = Pinger::Ping.create(:domain => record)
+        "finised in #{ping.response_time} seconds"
       end
       
       def show(domain=nil)
-	record = Pinger::Domain.find(:domain => domain)
-        return puts "#{domain} hasn't been added to pinger. Add it with `pinger add #{domain}`" if record.nil?  
+	      record = find_domain(domain)
+        return domain_not_found(domain) if record.nil?
         out = <<OUT
 #{domain}
 #{'-' * (domain.length + 3)}
 #{record.pings.count} pings since #{record.created_at}
 OUT
-        puts out
+        out
       end
-    
+      
+      private
+
+        def find_domain(domain)
+          Pinger::Domain.find(:domain => domain)         
+        end
+
+        def domain_not_found(domain)
+         "#{domain} hasn't been added to pinger. Add it with `pinger add #{domain}`"
+        end
+
     end
     
   end
 
 end
+
