@@ -15,7 +15,7 @@ class PingTest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :domain_id, :status, :response, :created_at ], Pinger::Ping.columns
+    assert_equal [ :id, :domain_id, :status, :response, :response_time, :created_at ], Pinger::Ping.columns
   end
   
   should "save domain to database" do
@@ -30,7 +30,12 @@ class PingTest < MiniTest::Unit::TestCase
     def setup
       @ping = Pinger::Ping.create(:domain_id => domain.id)
     end
-    
+
+    should "send request and save response" do
+      @ping.request!
+      assert 0 < @ping.response_time
+    end
+
     should "be deleted" do
       count = Pinger::Ping.count
       @ping.destroy

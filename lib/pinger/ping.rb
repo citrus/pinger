@@ -8,11 +8,8 @@ module Pinger
     
     plugin :timestamps
 
-    attr_reader :response_time
-
-    def before_create
+    def request! 
       perform_request
-      super
     end
 
     private 
@@ -24,7 +21,7 @@ module Pinger
         #puts res.inspect
         self.status = res.code
         self.response = res.body
-        @response_time = (Time.now.to_f - time).round(3)
+        self.response_time = (Time.now.to_f - time).round(3)
       end
 
   end

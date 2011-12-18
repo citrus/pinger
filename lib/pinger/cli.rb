@@ -81,6 +81,7 @@ HELP
         return domain_not_found(domain) if record.nil?
         puts "pinging #{domain}..."
         ping = Pinger::Ping.create(:domain => record)
+        ping.request!
         "finised in #{ping.response_time} seconds"
       end
       
