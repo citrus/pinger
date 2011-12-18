@@ -4,15 +4,16 @@ module Pinger
 
   module CLI
   
-    def self.commands
-      %w(list add rm ping show)
-    end
-  
+    SERVER_COMMANDS  = %w(start stop status)
+    UTILITY_COMMANDS = %w(list stats help)
+    DOMAIN_COMMANDS  = %w(add rm show ping) 
+    COMMANDS         = SERVER_COMMANDS + UTILITY_COMMANDS + DOMAIN_COMMANDS
+ 
     def self.run(args)
       return help if args.empty?
       command = args.first
-      raise "Invalid Command" unless Pinger::CLI.commands.include?(command)      
-      return usage(command) unless args.length == 2 || command == "list" 
+      raise "Invalid Command" unless COMMANDS.include?(command)      
+      return usage(command) if args.length != 2 && DOMAIN_COMMANDS.include?(command)
       puts Commands.send(*args)
     end
 
@@ -93,6 +94,9 @@ HELP
 #{'-' * (domain.length + 3)}
 #{record.pings.count} pings since #{record.created_at}
 OUT
+        out << record.pings.map{ |ping|
+          [ ping.created_at, ping.status, ping.response_time  ].join(", ")
+        }.join("\n")
         out
       end
       

@@ -33,7 +33,7 @@ class PingTest < MiniTest::Unit::TestCase
 
     should "send request and save response" do
       @ping.request!
-      assert 0 < @ping.response_time
+      assert_equal @ping.response_time, Pinger::Ping.order(:id).last.response_time
     end
 
     should "be deleted" do

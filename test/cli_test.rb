@@ -21,6 +21,22 @@ class CliTest < MiniTest::Unit::TestCase
     assert File.executable?(bin)
   end
 
+  should "return server commands" do
+    assert_equal %w(start stop status), Pinger::CLI::SERVER_COMMANDS
+  end
+
+  should "return utility commands" do
+    assert_equal %w(list stats help), Pinger::CLI::UTILITY_COMMANDS
+  end
+
+  should "return domain commands" do
+    assert_equal %w(add rm show ping), Pinger::CLI::DOMAIN_COMMANDS
+  end
+
+  should "return all commands" do
+    assert Pinger::CLI::COMMANDS.is_a?(Array)
+  end
+
   context "When listing domains" do
     
     def setup
@@ -32,9 +48,8 @@ class CliTest < MiniTest::Unit::TestCase
       assert_equal "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`", out
     end
 
-    should "show usage for all commands except list if no argument is given" do
-      Pinger::CLI.commands.each do |command|
-        next if command == "list"
+    should "show usage for all domain commands if no argument is given" do
+      Pinger::CLI::DOMAIN_COMMANDS.each do |command|
         assert_equal "Usage: pinger #{command} DOMAIN", cmd(command)
       end
     end

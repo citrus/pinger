@@ -22,6 +22,7 @@ module Pinger
         self.status = res.code
         self.response = res.body
         self.response_time = (Time.now.to_f - time).round(3)
+        self.save ? self : false
       end
 
   end
