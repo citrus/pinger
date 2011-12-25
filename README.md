@@ -5,6 +5,23 @@ Pinger
 ### .. isn't ready yet.. move along!
 
 
+Pinger will be a command line tool for monitoring the health of your websites.
+
+
+Goals
+-----
+
+* Simplicity
+* Minimal dependencies
+* Email notifications of service interuptions
+* Multiple DB adapters
+
+
+Future Goals
+------------
+
+* Simple & sexy web interface with charts/graphs
+
 
 Usage
 -----
