@@ -43,6 +43,25 @@ Domains:
     pinger show DOMAIN   # Show details for a domain
         
 
+Testing
+-------
+
+Testing is done with minitest. Run tests with:
+
+    bundle exec rake
+  
+  
+Sqlite is used by default, but you can test against other database adapters by setting PINGER_TEST_DB like so:
+
+    # postgres
+    PINGER_TEST_DB=postgres://root:@localhost/pinger bundle exec rake
+    
+    # mysql
+    PINGER_TEST_DB=mysql2://root:@localhost/pinger bundle exec rake
+
+
+Make sure you create the appropriate databases before running the tests.
+
 
 License
 -------

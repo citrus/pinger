@@ -24,5 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency("minitest",        "~> 2.1")
   s.add_development_dependency("minitest_should", "~> 0.2")
   s.add_development_dependency("sqlite3",         "~> 1.3")
+  s.add_development_dependency("pg",              "~> 0.12")
+  s.add_development_dependency("mysql2",          "~> 0.3")
   
 end

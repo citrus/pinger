@@ -50,11 +50,16 @@ module Pinger
       
     end
     
+    def reset_database!
+      db.drop_table(:pings, :domains)
+      create_schema
+    end
+    
     def require_models
       require "pinger/domain"
       require "pinger/ping"
     end
-        
+      
     def init!
       connect
       create_schema
