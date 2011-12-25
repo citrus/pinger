@@ -49,10 +49,16 @@ module Pinger
       end
       
     end
+    
+    def require_models
+      require "pinger/domain"
+      require "pinger/ping"
+    end
         
     def init!
       connect
       create_schema
+      require_models
     end
     
   end
@@ -60,6 +66,3 @@ module Pinger
 end
 
 Pinger.init!
-
-require "pinger/domain"
-require "pinger/ping"
