@@ -1,17 +1,19 @@
-require 'eventmachine'
+require "eventmachine"
 
 module Pinger
-
   module Machine
   
-    def receive_data(data)
-      p data
+    def self.start
+      EM.run {
+        
+      }
+      EM.reactor_running?
     end
-  
+    
+    def self.stop
+      EM.stop
+      EM.reactor_running?
+    end
+    
   end
-
 end
-
-EM.run {
-  EM.start_server("127.0.0.1", 8080, Pinger::Machine)
-}
