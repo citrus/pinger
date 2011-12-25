@@ -1,6 +1,7 @@
-ENV["PINGER_DB"] = "sqlite://test/db/pinger.db"
+DB_PATH = File.expand_path("../db/pinger.db", __FILE__)
+File.delete(DB_PATH) if File.exists?(DB_PATH)
 
-File.delete(ENV["PINGER_DB"]) if File.exists?(ENV["PINGER_DB"])
+ENV["PINGER_DB"] = "sqlite://#{DB_PATH}"
 
 gem "minitest"
 require "minitest/autorun"

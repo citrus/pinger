@@ -17,6 +17,7 @@ module Pinger
         puts e.message
         puts "*" * 88
       end
+      @connection
     end
     alias :db :connection
     
