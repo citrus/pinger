@@ -28,10 +28,10 @@ module Pinger
     
     def create_schema
       
-      unless db.table_exists?(:domains)
-        db.create_table :domains do
+      unless db.table_exists?(:uris)
+        db.create_table :uris do
           primary_key :id
-          String      :domain, :unique => true, :null => false
+          String      :uri, :unique => true, :null => false
           DateTime    :created_at
           index       :created_at
         end        
@@ -40,7 +40,7 @@ module Pinger
       unless db.table_exists?(:pings)
         db.create_table :pings do
           primary_key :id
-          foreign_key :domain_id, :domains, :key => :id
+          foreign_key :uri_id, :uris, :key => :id
           Integer     :status
           column      :response, :text
           Float       :response_time          
@@ -52,12 +52,12 @@ module Pinger
     end
     
     def reset_database!
-      db.drop_table(:pings, :domains)
+      db.drop_table(:pings, :uris)
       create_schema
     end
     
     def require_models
-      require "pinger/domain"
+      require "pinger/uri"
       require "pinger/ping"
     end
       

@@ -11,8 +11,8 @@ def cmd(command)
   end
 end
 
-def setup_domain(domain="example.com")
-  @domain ||= Pinger::Domain.find_or_create(:domain => domain) 
+def setup_uri(uri="http://example.com")
+  @uri ||= Pinger::URI.find_or_create(:uri => uri) 
 end
 
 class CliTest < MiniTest::Unit::TestCase
@@ -25,8 +25,8 @@ class CliTest < MiniTest::Unit::TestCase
     assert_equal %w(list stats help), Pinger::CLI::UTILITY_COMMANDS
   end
 
-  should "return domain commands" do
-    assert_equal %w(add rm show ping), Pinger::CLI::DOMAIN_COMMANDS
+  should "return uri commands" do
+    assert_equal %w(add rm show ping), Pinger::CLI::URI_COMMANDS
   end
 
   should "return all commands" do
@@ -39,116 +39,116 @@ class CliTest < MiniTest::Unit::TestCase
     end
   end
 
-  context "When listing domains" do
+  context "When listing uris" do
     
     def setup
-      Pinger::Domain.dataset.destroy
+      Pinger::URI.dataset.destroy
     end
     
-    should "list domains and show empty message" do
+    should "list uris and show empty message" do
       out = cmd("list")
-      assert_equal "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`", out
+      assert_equal "No uris have been added to pinger. Add a uri with `pinger add URI`", out
     end
 
-    should "show usage for all domain commands if no argument is given" do
-      Pinger::CLI::DOMAIN_COMMANDS.each do |command|
-        assert_equal "Usage: pinger #{command} DOMAIN", cmd(command)
+    should "show usage for all uri commands if no argument is given" do
+      Pinger::CLI::URI_COMMANDS.each do |command|
+        assert_equal "Usage: pinger #{command} URI", cmd(command)
       end
     end
     
-    context "With some existing domains" do
+    context "With some existing uris" do
     
       def setup
-        Pinger::Domain.dataset.destroy
+        Pinger::URI.dataset.destroy
         3.times do |i|
-          Pinger::Domain.create(:domain => "#{i}.example.com")
+          Pinger::URI.create(:uri => "http://#{i}.example.com")
         end
       end
     
-      should "list domains" do
+      should "list uris" do
         out = cmd("list")
-        assert_equal "0.example.com\n1.example.com\n2.example.com", out
+        assert_equal "http://0.example.com\nhttp://1.example.com\nhttp://2.example.com", out
       end
       
     end
   
   end
   
-  context "When adding domains" do
+  context "When adding uris" do
     
     def setup
-      Pinger::Domain.dataset.destroy
+      Pinger::URI.dataset.destroy
     end
      
-    should "add domain to database" do
-      assert Pinger::Domain.find(:domain => "example.com").nil?
-      out = cmd("add example.com")
-      assert !Pinger::Domain.find(:domain => "example.com").nil?
-      assert_equal "example.com was successfully added to pinger", out
+    should "add uri to database" do
+      assert Pinger::URI.find(:uri => "http://example.com").nil?
+      out = cmd("add http://example.com")
+      assert !Pinger::URI.find(:uri => "http://example.com").nil?
+      assert_equal "http://example.com was successfully added to pinger", out
     end
     
-    should "not allow duplicate domains to be added" do
-      setup_domain
-      out = cmd("add example.com")
-      assert_equal "example.com already exists in pinger", out
+    should "not allow duplicate uris to be added" do
+      setup_uri
+      out = cmd("add http://example.com")
+      assert_equal "http://example.com already exists in pinger", out
     end
     
   end
 
-  context "When removing domains" do
+  context "When removing uris" do
     
     def setup
-      setup_domain 
+      setup_uri 
     end
     
-    should "remove domain from database" do
-      assert !Pinger::Domain.find(:domain => "example.com").nil?
-      out = cmd("rm example.com")
-      assert Pinger::Domain.find(:domain => "example.com").nil?
-      assert_equal "example.com was successfully removed from pinger", out
+    should "remove uri from database" do
+      assert !Pinger::URI.find(:uri => "http://example.com").nil?
+      out = cmd("rm http://example.com")
+      assert Pinger::URI.find(:uri => "http://example.com").nil?
+      assert_equal "http://example.com was successfully removed from pinger", out
     end
     
-    should "not allow non-existant domains to be removed" do
-      Pinger::Domain.dataset.destroy
-      out = cmd("rm example.com")
-      assert_equal "example.com doesn't exist in pinger", out
+    should "not allow non-existant uris to be removed" do
+      Pinger::URI.dataset.destroy
+      out = cmd("rm http://example.com")
+      assert_equal "http://example.com doesn't exist in pinger", out
     end
     
   end
   
-  context "When showing a domain" do
+  context "When showing a uri" do
   
     def setup
-      setup_domain 
+      setup_uri 
     end
 
-    should "show warning when domain doesn't exist" do
-      out = cmd("show nonexistant.example.com")
-      assert_equal "nonexistant.example.com hasn't been added to pinger. Add it with `pinger add nonexistant.example.com`", out 
+    should "show warning when uri doesn't exist" do
+      out = cmd("show http://nonexistant.example.com")
+      assert_equal "http://nonexistant.example.com hasn't been added to pinger. Add it with `pinger add http://nonexistant.example.com`", out 
     end
 
-    should "show domain" do
-      out = cmd("show example.com")
-      assert_match /^example.com\n/, out
-      assert_match Regexp.new("#{@domain.pings.count} pings since #{@domain.created_at.formatted}"), out
+    should "show uri" do
+      out = cmd("show http://example.com")
+      assert_match /^http:\/\/example.com\n/, out
+      assert_match Regexp.new("#{@uri.pings.count} pings since #{@uri.created_at.formatted}"), out
     end 
 
   end
 
-  context "When pinging a domain" do
+  context "When pinging a uri" do
 
     def setup
-      setup_domain
+      setup_uri
     end
 
-    should "show warning when domain doesn't exist" do
-      out = cmd("show nonexistant.example.com")
-      assert_equal "nonexistant.example.com hasn't been added to pinger. Add it with `pinger add nonexistant.example.com`", out
+    should "show warning when uri doesn't exist" do
+      out = cmd("ping http://nonexistant.example.com")
+      assert_equal "http://nonexistant.example.com hasn't been added to pinger. Add it with `pinger add http://nonexistant.example.com`", out
     end
 
-    should "ping domain" do
-      outs = cmd("ping example.com").split("\n")
-      assert_equal "pinging example.com...", outs.first
+    should "ping uri" do
+      outs = cmd("ping http://example.com").split("\n")
+      assert_equal "pinging http://example.com...", outs.first
     end
 
   end

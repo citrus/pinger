@@ -28,11 +28,11 @@ Usage
 
 Here's what I'm aiming for in the CLI:
 
-    pinger list          # Lists all domains in pinger's database
-    pinger add DOMAIN    # Add a domain to pinger's database
-    pinger remove DOMAIN # Remove the domain from pinger's database
-    pinger ping DOMAIN   # Test the domain
-    pinger show DOMAIN   # Show details for a domain
+    pinger list          # Lists all uris in pinger's database
+    pinger add URI    # Add a uri to pinger's database
+    pinger remove URI # Remove the uri from pinger's database
+    pinger ping URI   # Test the uri
+    pinger show URI   # Show details for a uri
         
 
 Testing

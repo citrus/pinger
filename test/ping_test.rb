@@ -1,7 +1,7 @@
 require "test_helper"
 
-def domain
-  @domain ||= Pinger::Domain.find_or_create(:domain => "www.google.com")
+def uri
+  @uri ||= Pinger::URI.find_or_create(:uri => "http://www.google.com")
 end
 
 class PingTest < MiniTest::Unit::TestCase
@@ -15,20 +15,20 @@ class PingTest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :domain_id, :status, :response, :response_time, :created_at ], Pinger::Ping.columns
+    assert_equal [ :id, :uri_id, :status, :response, :response_time, :created_at ], Pinger::Ping.columns
   end
   
   should "save ping to database" do
-    ping = Pinger::Ping.new(:domain_id => domain.id)
+    ping = Pinger::Ping.new(:uri_id => uri.id)
     time = Time.now.to_i
     assert ping.save
     assert_equal time, ping.created_at.to_i
   end
   
-  context "An existing ping for a valid domain" do
+  context "An existing ping for a valid uri" do
     
     def setup
-      @ping = Pinger::Ping.create(:domain_id => domain.id)
+      @ping = Pinger::Ping.create(:uri_id => uri.id)
     end
 
     should "send request and save response" do
@@ -46,11 +46,11 @@ class PingTest < MiniTest::Unit::TestCase
   
   end
   
-  context "And existing ping for an unreachable domain" do
+  context "And existing ping for an unreachable uri" do
     
     def setup
-      domain.update(:domain => "something.that.doesnt.exist.example.com")
-      @ping = Pinger::Ping.create(:domain_id => domain.id)
+      uri.update(:uri => "http://something.that.doesnt.exist.example.com")
+      @ping = Pinger::Ping.create(:uri_id => uri.id)
       @ping.request!
     end
     

@@ -4,7 +4,7 @@ require 'uri'
 module Pinger
   class Ping < Sequel::Model
     
-    many_to_one :domain
+    many_to_one :uri, :class => URI
     
     plugin :timestamps
 
@@ -20,10 +20,10 @@ module Pinger
 
       def perform_request
         time = Time.now.to_f
-        uri  = URI.parse(domain.url)
+        @uri  = ::URI.parse(uri.uri)
         
         begin
-          @res = Net::HTTP.get_response(uri)
+          @res = Net::HTTP.get_response(@uri)
         rescue SocketError => e
           # bad request...
         end
