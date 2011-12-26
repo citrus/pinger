@@ -26,15 +26,7 @@ Future Goals
 Usage
 -----
 
-Here's what I'm aiming for:
-
-
-Daemon:
-
-    pinger start # Starts the pinger daemon
-    pinger stop  # Stops the pinger daemon
-
-Domains:
+Here's what I'm aiming for in the CLI:
 
     pinger list          # Lists all domains in pinger's database
     pinger add DOMAIN    # Add a domain to pinger's database

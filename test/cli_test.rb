@@ -21,10 +21,6 @@ class CliTest < MiniTest::Unit::TestCase
     assert File.executable?(bin)
   end
 
-  should "return server commands" do
-    assert_equal %w(start stop status), Pinger::CLI::SERVER_COMMANDS
-  end
-
   should "return utility commands" do
     assert_equal %w(list stats help), Pinger::CLI::UTILITY_COMMANDS
   end
