@@ -77,7 +77,7 @@ module Pinger
         puts "pinging #{domain}..."
         ping = Pinger::Ping.create(:domain => record)
         ping.request!
-        "finised in #{ping.response_time} seconds"
+        "finished in #{ping.response_time} seconds with status #{ping.status}"
       end
       
       def show(domain=nil)

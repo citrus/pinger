@@ -40,9 +40,9 @@ module Pinger
         db.create_table :pings do
           primary_key :id
           foreign_key :domain_id, :domains, :key => :id
-          String      :status
+          Integer     :status
           column      :response, :text
-          Float       :response_time
+          Float       :response_time          
           DateTime    :created_at
           index       :created_at
         end

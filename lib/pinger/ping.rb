@@ -16,15 +16,26 @@ module Pinger
 
       def perform_request
         time = Time.now.to_f
-        uri = URI.parse(domain.url)
-        res = Net::HTTP.get_response(uri)
-        #puts res.inspect
-        self.status = res.code
-        self.response = res.body
+        uri  = URI.parse(domain.url)
+        
+        begin
+          @res = Net::HTTP.get_response(uri)
+        rescue SocketError => e
+          # bad request...
+        end
+        
         self.response_time = (Time.now.to_f - time).round(3)
+        
+        unless @res.nil?
+          self.status = @res.code.to_i
+          self.response = @res.body
+        else
+          # bad request
+          self.status = 400
+        end
+        
         self.save ? self : false
       end
 
   end
 end
-
