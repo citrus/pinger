@@ -27,12 +27,9 @@ module Pinger
       end
 
       def list
-        info = []
-        Pinger::Domain.dataset.each do |i|
-          info << i.domain
-        end
-        info << "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`" if info.empty?
-        info.join("\n")
+        domains = Pinger::Domain.order(:domain)
+        return "No domains have been added to pinger. Add a domain with `pinger add DOMAIN`" if domains.empty?
+        domains.map(:domain).join("\n")
       end
        
       def add(domain=nil)
