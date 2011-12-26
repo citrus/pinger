@@ -9,13 +9,22 @@ module Pinger
     COMMANDS         = UTILITY_COMMANDS + URI_COMMANDS
  
     def self.run(command, args)
-      command = :help unless COMMANDS.include?(command)      
-      return usage(command) if args.length != 1 && URI_COMMANDS.include?(command)
-      puts Commands.send(command, *args)
+      if URI_COMMANDS.include?(command)
+        if args.length == 1
+          uri = Pinger::URI.standardize(args.first)
+          result = Commands.send(command, uri)
+        else
+          result = usage(command)
+        end
+      else
+        command = :help unless COMMANDS.include?(command) && args.length == 0
+        result = Commands.send(command)
+      end
+      puts result
     end
 
     def self.usage(command)
-      puts "Usage: pinger #{command} URI"
+      "Usage: pinger #{command} URI"
     end
        
     module Commands
@@ -95,6 +104,7 @@ HELP
       private
 
         def find_uri(uri)
+          uri = Pinger::URI.standardize(uri)
           Pinger::URI.find(:uri => uri)         
         end
         
