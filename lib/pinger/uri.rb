@@ -18,7 +18,7 @@ module Pinger
     
     def created_at
       values[:created_at].extend(FormattedTime)
-    end 
+    end
 
   end
 end
