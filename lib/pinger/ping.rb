@@ -11,6 +11,10 @@ module Pinger
     def request! 
       perform_request
     end
+    
+    def created_at
+      values[:created_at].extend(FormattedTime)
+    end 
 
     private 
 

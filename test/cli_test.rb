@@ -134,7 +134,7 @@ class CliTest < MiniTest::Unit::TestCase
     should "show domain" do
       out = cmd("show example.com")
       assert_match /^example.com\n/, out
-      assert_match Regexp.new("#{@domain.pings.count} pings since #{@domain.created_at}"), out
+      assert_match Regexp.new("#{@domain.pings.count} pings since #{@domain.created_at.formatted}"), out
     end 
 
   end

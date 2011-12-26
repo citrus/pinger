@@ -1,6 +1,7 @@
 require "rubygems"
 require "sequel"
 require "pinger/version"
+require "pinger/formatted_time"
 
 module Pinger
   class Pinger::DatabaseError < StandardError; end

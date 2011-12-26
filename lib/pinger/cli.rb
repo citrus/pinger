@@ -85,11 +85,12 @@ module Pinger
         return domain_not_found(domain) if record.nil?
         out = <<OUT
 #{domain}
-#{'-' * (domain.length + 3)}
-#{record.pings.count} pings since #{record.created_at}
+#{'=' * (domain.length + 3)}
+#{record.pings.count} pings since #{record.created_at.formatted}
+#{'-' * 40}
 OUT
-        out << record.pings.map{ |ping|
-          [ ping.created_at, ping.status, ping.response_time  ].join(", ")
+        out << record.pings.reverse.map{ |ping|
+          [ ping.created_at.formatted, ping.status, "#{ping.response_time}s"  ].join(", ")
         }.join("\n")
         out
       end
@@ -119,7 +120,7 @@ HELP
         def find_domain(domain)
           Pinger::Domain.find(:domain => domain)         
         end
-
+        
         def domain_not_found(domain)
          "#{domain} hasn't been added to pinger. Add it with `pinger add #{domain}`"
         end
