@@ -20,14 +20,14 @@ class URITest < MiniTest::Unit::TestCase
   
   should "save uri to database" do
     uri = Pinger::URI.new(:uri => "http://example.com")
-    time = Time.now.to_i
     assert uri.save
-    assert_equal time, uri.created_at.to_i
+    assert !uri.created_at.nil?
   end
   
   context "An existing uri" do
     
     def setup
+      Pinger::URI.dataset.destroy
       @uri = Pinger::URI.find_or_create(:uri => "http://example.com")
     end
     

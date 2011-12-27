@@ -20,9 +20,8 @@ class PingTest < MiniTest::Unit::TestCase
   
   should "save ping to database" do
     ping = Pinger::Ping.new(:uri_id => uri.id)
-    time = Time.now.to_i
     assert ping.save
-    assert_equal time, ping.created_at.to_i
+    assert !ping.created_at.nil?
   end
   
   context "An existing ping for a valid uri" do

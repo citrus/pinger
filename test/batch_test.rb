@@ -3,7 +3,7 @@ require "test_helper"
 class BatchTest < MiniTest::Unit::TestCase
 
   def setup
-    Pinger::Ping.dataset.destroy
+    Pinger::URI.dataset.destroy
     %w(www.google.com example.com something-that-doesnt-exist-3.gov).each do |uri|
       Pinger::URI.create(:uri => uri)
     end
