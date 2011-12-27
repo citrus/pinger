@@ -148,7 +148,7 @@ class CliTest < MiniTest::Unit::TestCase
 
     should "ping uri" do
       outs = cmd("ping http://example.com").split("\n")
-      assert_equal "pinging http://example.com...", outs.first
+      assert_equal "#{FormattedTime.now.formatted} - pinging http://example.com", outs.first
     end
 
   end

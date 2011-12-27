@@ -67,7 +67,7 @@ module Pinger
       def ping(uri=nil)
         record = find_uri(uri)
         return uri_not_found(uri) if record.nil?
-        puts "pinging #{uri}..."
+        puts "#{FormattedTime.now.formatted} - pinging #{uri}"
         ping = Pinger::Ping.create(:uri => record)
         ping.request!
         "finished in #{ping.response_time} seconds with status #{ping.status}"
