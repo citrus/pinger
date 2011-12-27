@@ -16,7 +16,7 @@ class CliTest < MiniTest::Unit::TestCase
   end
 
   should "return utility commands" do
-    assert_equal %w(list stats batch help), Pinger::CLI::UTILITY_COMMANDS
+    assert_equal %w(list stats batch flush help), Pinger::CLI::UTILITY_COMMANDS
   end
 
   should "return uri commands" do
@@ -67,6 +67,12 @@ class CliTest < MiniTest::Unit::TestCase
       should "run batch" do
         out = Pinger::CLI::Commands.batch
         assert_match Regexp.new("#{Pinger::URI.count} pings completed in \\d+\\.\\d+ seconds"), out
+      end
+      
+      should "flush pings from database" do
+        count = Pinger::Ping.count
+        out = Pinger::CLI::Commands.flush
+        assert_match "deleted #{count} pings from pinger's database", out 
       end
       
       should "return stats for uri and pings" do
