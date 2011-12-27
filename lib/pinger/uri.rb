@@ -20,6 +20,12 @@ module Pinger
       t = values[:created_at]
       FormattedTime.at(t) unless t.nil?
     end
-
+    
+    def request!
+      ping = Pinger::Ping.create(:uri => self)
+      ping.request!
+      ping
+    end
+    
   end
 end

@@ -31,6 +31,11 @@ class URITest < MiniTest::Unit::TestCase
       @uri = Pinger::URI.find_or_create(:uri => "http://example.com")
     end
     
+    should "request and create ping" do
+      @uri.request!
+      assert_equal 1, Pinger::Ping.count
+    end
+    
     should "be deleted" do
       count = Pinger::URI.count
       @uri.destroy

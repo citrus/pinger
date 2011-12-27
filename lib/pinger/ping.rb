@@ -8,7 +8,7 @@ module Pinger
     
     plugin :timestamps
 
-    def request! 
+    def request!
       perform_request
     end
     
@@ -17,7 +17,7 @@ module Pinger
       FormattedTime.at(t) unless t.nil?
     end
 
-    private 
+    private
 
       def perform_request
         time = Time.now.to_f
