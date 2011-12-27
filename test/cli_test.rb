@@ -166,4 +166,3 @@ class CliTest < MiniTest::Unit::TestCase
   end
 
 end
-

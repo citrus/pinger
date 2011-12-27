@@ -1,4 +1,4 @@
-require 'pinger'
+require "pinger"
 
 module Pinger
 
