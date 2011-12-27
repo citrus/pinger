@@ -3,7 +3,7 @@ require "test_helper"
 class FormattedTimeTest < MiniTest::Unit::TestCase
 
   def setup
-    @time = Time.new(2011, 12, 26, 10, 10, 10).extend(FormattedTime)
+    @time = FormattedTime.new(2011, 12, 26, 10, 10, 10)
   end
 
   should "respond to formatted method" do

@@ -13,8 +13,9 @@ module Pinger
     end
     
     def created_at
-      values[:created_at].extend(FormattedTime)
-    end 
+      t = values[:created_at]
+      FormattedTime.at(t) unless t.nil?
+    end
 
     private 
 
