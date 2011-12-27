@@ -1,3 +1,10 @@
+begin
+  require 'simplecov'
+  SimpleCov.start
+rescue Exception
+  puts "Install simplecov for test coverage..."
+end
+
 ENV["PINGER_DB"] = ENV["PINGER_TEST_DB"] || "sqlite://test/db/pinger.db"
 
 gem "minitest"

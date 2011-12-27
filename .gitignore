@@ -3,6 +3,7 @@
 *.log
 .bundle
 .DS_Store
+coverage
 Gemfile.lock
 pkg/*
 test/db/*.db
