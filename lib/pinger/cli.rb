@@ -92,12 +92,15 @@ OUT
         out = <<HELP
 Welcome to pinger! Here's the rundown:
 
+  pinger help       # Shows pinger's usage
+  pinger stats      # Shows stats for pings and uris
+
   pinger list       # Lists all uris in pinger's database
   pinger add URI    # Add a uri to pinger's database
   pinger remove URI # Remove the uri from pinger's database
   pinger ping URI   # Test the uri
   pinger show URI   # Show details for a uri
-        
+
 HELP
       end
       
