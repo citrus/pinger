@@ -22,7 +22,7 @@ class CliTest < MiniTest::Unit::TestCase
   end
 
   should "return utility commands" do
-    assert_equal %w(list stats help), Pinger::CLI::UTILITY_COMMANDS
+    assert_equal %w(list stats batch help), Pinger::CLI::UTILITY_COMMANDS
   end
 
   should "return uri commands" do
@@ -68,6 +68,11 @@ class CliTest < MiniTest::Unit::TestCase
       should "list uris" do
         out = cmd("list")
         assert_equal "http://0.example.com\nhttp://1.example.com\nhttp://2.example.com", out
+      end
+      
+      should "run batch" do
+        out = cmd("batch")
+        assert_equal "#{Pinger::URI.count} pings complete", out
       end
       
     end

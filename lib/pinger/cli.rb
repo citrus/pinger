@@ -4,7 +4,7 @@ module Pinger
 
   module CLI
   
-    UTILITY_COMMANDS = %w(list stats help)
+    UTILITY_COMMANDS = %w(list stats batch help)
     URI_COMMANDS     = %w(add rm show ping) 
     COMMANDS         = UTILITY_COMMANDS + URI_COMMANDS
  
@@ -30,17 +30,23 @@ module Pinger
     module Commands
           
       extend self
-
-      def stats
-        "#{Pinger::Ping.count} pings on #{Pinger::URI.count} uris"     
-      end
-
+      
       def list
         uris = Pinger::URI.order(:uri)
         return "No uris have been added to pinger. Add a uri with `pinger add URI`" if uris.empty?
         uris.map(:uri).join("\n")
       end
-       
+      
+      def stats
+        "#{Pinger::Ping.count} pings on #{Pinger::URI.count} uris"     
+      end
+
+      def batch
+        @batch = Batch.new
+        @batch.process
+        "#{@batch.uris.length} pings complete"
+      end
+      
       def add(uri=nil)
         return "#{uri} already exists in pinger" if find_uri(uri) 
         record = Pinger::URI.new(:uri => uri)
