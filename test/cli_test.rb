@@ -5,12 +5,6 @@ def bin
   @bin ||= File.expand_path("../../bin/pinger", __FILE__)
 end
 
-def cmd(command)
-  capture_stdout do
-    puts `#{bin} #{command}`
-  end
-end
-
 def setup_uri(uri="http://example.com")
   @uri ||= Pinger::URI.find_or_create(:uri => uri) 
 end
@@ -38,7 +32,13 @@ class CliTest < MiniTest::Unit::TestCase
       assert Pinger::CLI::Commands.respond_to?(command), "Pinger::Commands should respond to #{command}"
     end
   end
-
+  
+  should "return usage for uri commands if uri isn't passed as an argument" do
+    Pinger::CLI::URI_COMMANDS.each do |command|
+      assert_equal Pinger::CLI.usage(command), Pinger::CLI.run(command, [])
+    end
+  end
+  
   context "When listing uris" do
     
     def setup
@@ -46,14 +46,8 @@ class CliTest < MiniTest::Unit::TestCase
     end
     
     should "list uris and show empty message" do
-      out = cmd("list")
+      out = Pinger::CLI::Commands.list
       assert_equal "No uris have been added to pinger. Add a uri with `pinger add URI`", out
-    end
-
-    should "show usage for all uri commands if no argument is given" do
-      Pinger::CLI::URI_COMMANDS.each do |command|
-        assert_equal "Usage: pinger #{command} URI", cmd(command)
-      end
     end
     
     context "With some existing uris" do
@@ -66,15 +60,27 @@ class CliTest < MiniTest::Unit::TestCase
       end
     
       should "list uris" do
-        out = cmd("list")
+        out = Pinger::CLI::Commands.list
         assert_equal "http://0.example.com\nhttp://1.example.com\nhttp://2.example.com", out
       end
       
       should "run batch" do
-        out = cmd("batch")
+        out = Pinger::CLI::Commands.batch
         assert_equal "#{Pinger::URI.count} pings complete", out
       end
       
+      should "return stats for uri and pings" do
+        out = Pinger::CLI::Commands.stats
+        assert_equal "0 pings on 3 uris", out
+      end
+
+      should "return help menu" do
+        out = Pinger::CLI::Commands.help
+        Pinger::CLI::URI_COMMANDS.each do |command|
+          out.include?(command)
+        end
+      end
+
     end
   
   end
@@ -87,14 +93,14 @@ class CliTest < MiniTest::Unit::TestCase
      
     should "add uri to database" do
       assert Pinger::URI.find(:uri => "http://example.com").nil?
-      out = cmd("add http://example.com")
+      out = Pinger::CLI::Commands.add("http://example.com")
       assert !Pinger::URI.find(:uri => "http://example.com").nil?
       assert_equal "http://example.com was successfully added to pinger", out
     end
     
     should "not allow duplicate uris to be added" do
       setup_uri
-      out = cmd("add http://example.com")
+      out = Pinger::CLI::Commands.add("http://example.com")
       assert_equal "http://example.com already exists in pinger", out
     end
     
@@ -108,14 +114,14 @@ class CliTest < MiniTest::Unit::TestCase
     
     should "remove uri from database" do
       assert !Pinger::URI.find(:uri => "http://example.com").nil?
-      out = cmd("rm http://example.com")
+      out = Pinger::CLI::Commands.rm("http://example.com")
       assert Pinger::URI.find(:uri => "http://example.com").nil?
       assert_equal "http://example.com was successfully removed from pinger", out
     end
     
     should "not allow non-existant uris to be removed" do
       Pinger::URI.dataset.destroy
-      out = cmd("rm http://example.com")
+      out = Pinger::CLI::Commands.rm("http://example.com")
       assert_equal "http://example.com doesn't exist in pinger", out
     end
     
@@ -128,12 +134,12 @@ class CliTest < MiniTest::Unit::TestCase
     end
 
     should "show warning when uri doesn't exist" do
-      out = cmd("show http://nonexistant.example.com")
+      out = Pinger::CLI::Commands.show("http://nonexistant.example.com")
       assert_equal "http://nonexistant.example.com hasn't been added to pinger. Add it with `pinger add http://nonexistant.example.com`", out 
     end
 
     should "show uri" do
-      out = cmd("show http://example.com")
+      out = Pinger::CLI::Commands.show("http://example.com")
       assert_match /^http:\/\/example.com\n/, out
       assert_match Regexp.new("#{@uri.pings.count} pings since #{@uri.created_at.formatted}"), out
     end 
@@ -147,13 +153,14 @@ class CliTest < MiniTest::Unit::TestCase
     end
 
     should "show warning when uri doesn't exist" do
-      out = cmd("ping http://nonexistant.example.com")
+      out = Pinger::CLI::Commands.ping("http://nonexistant.example.com")
       assert_equal "http://nonexistant.example.com hasn't been added to pinger. Add it with `pinger add http://nonexistant.example.com`", out
     end
 
     should "ping uri" do
-      outs = cmd("ping http://example.com").split("\n")
-      assert_equal "#{FormattedTime.now.formatted} - pinging http://example.com", outs.first
+      out = Pinger::CLI::Commands.ping("http://example.com")
+      ping = Pinger::Ping.order(:id).last
+      assert_equal "#{ping.created_at.formatted} - finished in #{ping.response_time} seconds with status #{ping.status}", out
     end
 
   end

@@ -20,7 +20,7 @@ module Pinger
         command = :help unless COMMANDS.include?(command) && args.length == 0
         result = Commands.send(command)
       end
-      puts result
+      result
     end
 
     def self.usage(command)
@@ -73,10 +73,10 @@ module Pinger
       def ping(uri=nil)
         record = find_uri(uri)
         return uri_not_found(uri) if record.nil?
-        puts "#{FormattedTime.now.formatted} - pinging #{uri}"
+        #puts "#{FormattedTime.now.formatted} - pinging #{uri}"
         ping = Pinger::Ping.create(:uri => record)
         ping.request!
-        "finished in #{ping.response_time} seconds with status #{ping.status}"
+        "#{FormattedTime.now.formatted} - finished in #{ping.response_time} seconds with status #{ping.status}"
       end
       
       def show(uri=nil)

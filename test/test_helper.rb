@@ -14,6 +14,3 @@ begin require "turn"; rescue LoadError; end
 
 require "pinger"
 Pinger.reset_database!
-
-# Load support files
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
