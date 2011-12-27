@@ -8,7 +8,10 @@ module Pinger
     end
     
     def process
-      uris.map(&:request!)
+      uris.each do |uri|
+        ping = uri.request!
+        puts "#{ping.created_at.formatted} - #{uri.uri} finished in #{ping.response_time} seconds with status #{ping.status}"
+      end
     end
       
   end

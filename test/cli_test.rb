@@ -66,7 +66,7 @@ class CliTest < MiniTest::Unit::TestCase
       
       should "run batch" do
         out = Pinger::CLI::Commands.batch
-        assert_equal "#{Pinger::URI.count} pings complete", out
+        assert_match Regexp.new("#{Pinger::URI.count} pings completed in \\d+\\.\\d+ seconds"), out
       end
       
       should "return stats for uri and pings" do
@@ -160,7 +160,7 @@ class CliTest < MiniTest::Unit::TestCase
     should "ping uri" do
       out = Pinger::CLI::Commands.ping("http://example.com")
       ping = Pinger::Ping.order(:id).last
-      assert_equal "#{ping.created_at.formatted} - finished in #{ping.response_time} seconds with status #{ping.status}", out
+      assert_equal "#{ping.created_at.formatted} - http://example.com finished in #{ping.response_time} seconds with status #{ping.status}", out
     end
 
   end

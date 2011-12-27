@@ -42,9 +42,10 @@ module Pinger
       end
 
       def batch
+        t = Time.now
         @batch = Batch.new
         @batch.process
-        "#{@batch.uris.length} pings complete"
+        "#{@batch.uris.length} pings completed in #{(Time.now - t).round(3)} seconds"
       end
       
       def add(uri=nil)
@@ -76,7 +77,7 @@ module Pinger
         #puts "#{FormattedTime.now.formatted} - pinging #{uri}"
         ping = Pinger::Ping.create(:uri => record)
         ping.request!
-        "#{FormattedTime.now.formatted} - finished in #{ping.response_time} seconds with status #{ping.status}"
+        "#{ping.created_at.formatted} - #{record.uri} finished in #{ping.response_time} seconds with status #{ping.status}"
       end
       
       def show(uri=nil)
