@@ -27,15 +27,28 @@ class CliTest < MiniTest::Unit::TestCase
     assert Pinger::CLI::COMMANDS.is_a?(Array)
   end
 
+  should "return help menu when invalid command is given" do
+    out = `#{bin} invalid-command`
+    assert_equal Pinger::CLI.run("help"), out
+  end
+
+  should "return usage for uri commands when uri is not specified" do
+    Pinger::CLI::URI_COMMANDS.each do |command|
+      assert_equal "Usage: pinger #{command} URI", Pinger::CLI.run(command)
+    end
+  end
+  
   should "ensure all commands are defined in Pinger::Commands module" do
     Pinger::CLI::COMMANDS.each do |command|
       assert Pinger::CLI::Commands.respond_to?(command), "Pinger::Commands should respond to #{command}"
     end
   end
   
-  should "return usage for uri commands if uri isn't passed as an argument" do
+  should "normalize uri for uri commands" do
+    domain = "example.com"
     Pinger::CLI::URI_COMMANDS.each do |command|
-      assert_equal Pinger::CLI.usage(command), Pinger::CLI.run(command, [])
+      out = Pinger::CLI.run(command, domain)
+      assert out.include?("http://#{domain}"), "http://#{domain} should be included in `#{out}`"
     end
   end
   
@@ -74,9 +87,9 @@ class CliTest < MiniTest::Unit::TestCase
         assert_equal "0 pings on 3 uris", out
       end
 
-      should "return help menu" do
+      should "list all commands in pinger help menu" do
         out = Pinger::CLI::Commands.help
-        Pinger::CLI::URI_COMMANDS.each do |command|
+        Pinger::CLI::COMMANDS.each do |command|
           out.include?(command)
         end
       end

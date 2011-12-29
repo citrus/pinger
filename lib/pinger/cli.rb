@@ -8,7 +8,8 @@ module Pinger
     URI_COMMANDS     = %w(add rm show ping) 
     COMMANDS         = UTILITY_COMMANDS + URI_COMMANDS
  
-    def self.run(command, args)
+    def self.run(*args)
+      command = args.shift
       if URI_COMMANDS.include?(command)
         if args.length == 1
           uri = Pinger::URI.standardize(args.first)
