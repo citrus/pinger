@@ -48,7 +48,7 @@ class PingTest < MiniTest::Unit::TestCase
   context "And existing ping for an unreachable uri" do
     
     def setup
-      uri.update(:uri => "http://something.that.doesnt.exist.example.com")
+      uri.update(:uri => "127.0.0.0")
       @ping = Pinger::Ping.create(:uri_id => uri.id)
       @ping.request!
     end
