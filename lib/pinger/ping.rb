@@ -12,6 +12,10 @@ module Pinger
       perform_request
     end
     
+    def stats
+      [ created_at.formatted, status, "#{response_time}s"  ].join(", ")
+    end
+    
     def created_at
       t = values[:created_at]
       FormattedTime.at(t.to_i) unless t.nil?

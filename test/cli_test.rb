@@ -155,6 +155,7 @@ class CliTest < MiniTest::Unit::TestCase
       out = Pinger::CLI::Commands.show("http://example.com")
       assert_match /^http:\/\/example.com\n/, out
       assert_match Regexp.new("#{@uri.pings.count} pings since #{@uri.created_at.formatted}"), out
+      assert out.include?(@uri.pings.map(&:stats).join("\n"))
     end 
 
   end

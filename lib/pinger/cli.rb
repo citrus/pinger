@@ -90,9 +90,7 @@ module Pinger
 #{record.pings.count} pings since #{record.created_at.formatted}
 #{'-' * 40}
 OUT
-        out << record.pings.reverse.map{ |ping|
-          [ ping.created_at.formatted, ping.status, "#{ping.response_time}s"  ].join(", ")
-        }.join("\n")
+        out << record.pings.reverse.map(&:stats).join("\n")
         out
       end
  
