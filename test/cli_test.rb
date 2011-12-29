@@ -183,7 +183,7 @@ class CliTest < MiniTest::Unit::TestCase
     should "ping uri" do
       out = Pinger::CLI::Commands.ping("http://example.com")
       ping = Pinger::Ping.order(:id).last
-      assert_equal "#{ping.created_at.formatted} - http://example.com finished in #{ping.response_time} seconds with status #{ping.status}", out
+      assert_equal ping.summary, out
     end
 
   end

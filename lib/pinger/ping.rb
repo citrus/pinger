@@ -20,6 +20,10 @@ module Pinger
       t = values[:created_at]
       FormattedTime.at(t.to_i) unless t.nil?
     end
+    
+    def summary
+      "#{created_at.formatted} - #{uri.uri} finished in #{response_time} seconds with status #{status}"
+    end
 
     private
     

@@ -40,6 +40,10 @@ class PingTest < MiniTest::Unit::TestCase
     should "return ping stats" do
       assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s"  ].join(", "), @ping.stats
     end
+    
+    should "return ping summary" do
+      assert_equal "#{@ping.created_at.formatted} - #{@ping.uri.uri} finished in #{@ping.response_time} seconds with status #{@ping.status}", @ping.summary
+    end
 
     should "be deleted" do
       count = Pinger::Ping.count
