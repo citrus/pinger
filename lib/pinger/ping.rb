@@ -1,5 +1,5 @@
-require 'net/http'
-require 'uri'
+require "net/http"
+require "uri"
 
 module Pinger
   class Ping < Sequel::Model
@@ -22,7 +22,7 @@ module Pinger
     end
 
     private
-
+    
       def perform_request
         time = Time.now.to_f
         @uri = ::URI.parse(uri.uri)
