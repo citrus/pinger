@@ -1,4 +1,3 @@
-require "rubygems"
 require "sequel"
 require "pinger/version"
 require "pinger/formatted_time"
