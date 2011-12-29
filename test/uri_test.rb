@@ -15,9 +15,17 @@ class URITest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :uri, :created_at ], Pinger::URI.columns
+    assert_equal [ :id, :uri, :scheme, :user_info, :host, :port, :registry, :path, :opaque, :query, :fragment, :created_at ], Pinger::URI.columns
   end
   
+  should "validate uri" do
+    %w(255.255.255.277 0.0.0.256 .com invalid. http://in\ valid.com).each do |i|
+      uri = Pinger::URI.new(:uri => i)
+      valid = uri.valid? rescue false
+      assert !valid
+    end
+  end
+   
   should "save uri to database" do
     uri = Pinger::URI.new(:uri => "http://example.com")
     assert uri.save

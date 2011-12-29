@@ -68,13 +68,13 @@ class CliTest < MiniTest::Unit::TestCase
       def setup
         Pinger::URI.dataset.destroy
         3.times do |i|
-          Pinger::URI.create(:uri => "http://#{i}.example.com")
+          Pinger::URI.create(:uri => "http://v#{i}.example.com")
         end
       end
     
       should "list uris" do
         out = Pinger::CLI::Commands.list
-        assert_equal "http://0.example.com\nhttp://1.example.com\nhttp://2.example.com", out
+        assert_equal "http://v0.example.com\nhttp://v1.example.com\nhttp://v2.example.com", out
       end
       
       should "run batch" do
@@ -109,6 +109,15 @@ class CliTest < MiniTest::Unit::TestCase
       out = Pinger::CLI::Commands.add("http://example.com")
       assert !Pinger::URI.find(:uri => "http://example.com").nil?
       assert_equal "http://example.com was successfully added to pinger", out
+    end
+     
+    should "validate and error while adding invalid uri to database" do
+      %w(255.255.255.277 0.0.0.256 .com invalid. https://in\ valid.com).each do |i|
+        i = Pinger::URI.standardize(i)
+        out = Pinger::CLI::Commands.add(i)
+        assert Pinger::URI.find(:uri => i).nil?
+        assert_equal "#{i} could not be added to pinger", out
+      end
     end
     
     should "not allow duplicate uris to be added" do

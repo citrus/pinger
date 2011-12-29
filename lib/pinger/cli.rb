@@ -53,9 +53,9 @@ module Pinger
         return "#{uri} already exists in pinger" if find_uri(uri) 
         record = Pinger::URI.new(:uri => uri)
         if record.save
-          "#{uri} was successfully added to pinger"
+          "#{record.uri} was successfully added to pinger"
         else
-          "#{uri} could not be added to pinger"
+          "#{record.uri} could not be added to pinger"
         end 
       end
       
@@ -75,7 +75,6 @@ module Pinger
       def ping(uri=nil)
         record = find_uri(uri)
         return uri_not_found(uri) if record.nil?
-        #puts "#{FormattedTime.now.formatted} - pinging #{uri}"
         ping = Pinger::Ping.create(:uri => record)
         ping.request!
         "#{ping.created_at.formatted} - #{record.uri} finished in #{ping.response_time} seconds with status #{ping.status}"

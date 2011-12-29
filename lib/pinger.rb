@@ -33,9 +33,18 @@ module Pinger
         db.create_table :uris do
           primary_key :id
           String      :uri, :unique => true, :null => false
+          String      :scheme
+          String      :user_info
+          String      :host
+          Integer     :port
+          String      :registry
+          String      :path
+          String      :opaque
+          String      :query
+          String      :fragment
           DateTime    :created_at
           index       :created_at
-        end        
+        end
       end
       
       unless db.table_exists?(:pings)
