@@ -4,7 +4,7 @@ module Pinger
 
   module CLI
   
-    UTILITY_COMMANDS = %w(list stats batch help)
+    UTILITY_COMMANDS = %w(list stats batch flush help)
     URI_COMMANDS     = %w(add rm show ping) 
     COMMANDS         = UTILITY_COMMANDS + URI_COMMANDS
  
@@ -49,6 +49,12 @@ module Pinger
         "#{@batch.uris.length} pings completed in #{(Time.now - t).round(3)} seconds"
       end
       
+      def flush
+        count = Pinger::Ping.count
+        Pinger::Ping.dataset.destroy
+        "deleted #{count} pings from pinger's database"
+      end
+
       def add(uri=nil)
         return "#{uri} already exists in pinger" if find_uri(uri) 
         record = Pinger::URI.new(:uri => uri)
@@ -99,7 +105,7 @@ Welcome to pinger! Here's the rundown:
 
   pinger help       # Shows pinger's usage
   pinger stats      # Shows stats for pings and uris
-
+  pinger batch      # Runs a ping test for all uris in pinger's database
   pinger list       # Lists all uris in pinger's database
   pinger add URI    # Add a uri to pinger's database
   pinger remove URI # Remove the uri from pinger's database

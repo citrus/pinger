@@ -28,12 +28,15 @@ Usage
 
 Here's what I'm aiming for in the CLI:
 
-    pinger list          # Lists all uris in pinger's database
+    pinger help       # Shows pinger's usage
+    pinger stats      # Shows stats for pings and uris
+    pinger batch      # Runs a ping test for all uris in pinger's database
+    pinger list       # Lists all uris in pinger's database
     pinger add URI    # Add a uri to pinger's database
     pinger remove URI # Remove the uri from pinger's database
     pinger ping URI   # Test the uri
     pinger show URI   # Show details for a uri
-        
+
 
 Testing
 -------
