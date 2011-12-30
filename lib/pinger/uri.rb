@@ -44,9 +44,9 @@ module Pinger
     
       def parse
         begin
-          parts = ::URI.split(self.uri)
-          [ :scheme, :user_info, :host, :port, :registry, :path, :opaque, :query, :fragment ].each_with_index do |part, index|
-            self.values[part] = parts[index]
+          parsed = ::URI.parse(self.uri)
+          [ :scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment, :request_uri ].each do |part|
+            self.values[part] = parsed.send(part)
           end
         rescue ::URI::InvalidURIError
           self.errors.add(:uri, "is invalid")

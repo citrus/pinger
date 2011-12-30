@@ -29,10 +29,9 @@ module Pinger
     
       def perform_request
         time = Time.now.to_f
-        @uri = ::URI.parse(uri.uri)
         begin
-          Net::HTTP.start(@uri.host, @uri.port, :use_ssl => @uri.scheme == 'https') do |http|
-            request = Net::HTTP::Get.new @uri.request_uri
+          Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+            request = Net::HTTP::Get.new uri.request_uri
             @response = http.request(request)
           end
         rescue Exception => e

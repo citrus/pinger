@@ -56,7 +56,7 @@ class PingTest < MiniTest::Unit::TestCase
   context "And existing ping for an unreachable uri" do
     
     def setup
-      uri.update(:uri => "http://localhost:11111")
+      uri.set(:uri => "http://localhost:11111").save
       @ping = Pinger::Ping.create(:uri_id => uri.id)
       @ping.request!
     end

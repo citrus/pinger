@@ -33,7 +33,7 @@ module Pinger
           primary_key :id
           String      :uri, :unique => true, :null => false
           String      :scheme
-          String      :user_info
+          String      :userinfo
           String      :host
           Integer     :port
           String      :registry
@@ -41,6 +41,7 @@ module Pinger
           String      :opaque
           String      :query
           String      :fragment
+          String      :request_uri
           DateTime    :created_at
           index       :created_at
         end
