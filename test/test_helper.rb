@@ -16,3 +16,7 @@ begin require "turn"; rescue LoadError; end
 
 require "pinger"
 Pinger.reset_database!
+
+Mail.defaults do
+  delivery_method :test
+end

@@ -27,7 +27,7 @@ module Pinger
     def self.usage(command)
       "Usage: pinger #{command} URI"
     end
-       
+    
     module Commands
           
       extend self

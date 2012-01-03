@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency("sequel", "~> 3.0")
-  s.add_dependency("pony",   "~> 1.4")
+  s.add_dependency("mail",   "~> 2.3")
   
   s.add_development_dependency("rake",            ">= 0.8")
   s.add_development_dependency("minitest",        "~> 2.1")

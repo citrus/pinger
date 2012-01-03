@@ -5,9 +5,9 @@ module Pinger
     ValidHostnameRegex  = Regexp.new("^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$");
     
     one_to_many :pings
-    one_to_many :alerts
+    many_to_many :alerts, :join_table => :pings, :right_key => :id, :right_primary_key => :ping_id
     
-    plugin :association_dependencies, :pings => :destroy, :alerts => :destroy
+    plugin :association_dependencies, :pings => :destroy
     plugin :timestamps
   
     def self.standardize(uri)

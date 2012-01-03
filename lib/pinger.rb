@@ -1,5 +1,5 @@
 require "sequel"
-require "pony"
+require "mail"
 
 require "pinger/version"
 require "pinger/formatted_time"
@@ -71,8 +71,8 @@ module Pinger
       unless db.table_exists?(:alerts)
         db.create_table :alerts do
           primary_key :id
-          foreign_key :uri_id,  :uris,  :key => :id
           foreign_key :ping_id, :pings, :key => :id
+          String      :subject
           DateTime    :created_at
           index       :created_at
         end

@@ -31,7 +31,7 @@ class PingTest < MiniTest::Unit::TestCase
     assert ping.save
     assert !ping.created_at.nil?
   end
-  
+    
   context "An existing ping for a valid uri" do
     
     def setup
@@ -49,10 +49,17 @@ class PingTest < MiniTest::Unit::TestCase
       assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s"  ].join(", "), @ping.stats
     end
     
+    should "create the default alert" do
+      ping2 = Pinger::Ping.create(:uri_id => uri.id)
+      ping2.update(:status => 422)
+      @ping.alert!(:default, @ping, ping2)
+      assert_equal "Pinger Alert", @ping.alert.subject
+    end
+    
     should "return ping summary" do
       assert_equal "#{@ping.created_at.formatted} - #{@ping.uri.uri} finished in #{@ping.response_time} seconds with status #{@ping.status}", @ping.summary
     end
-
+    
     should "be deleted" do
       count = Pinger::Ping.count
       @ping.destroy

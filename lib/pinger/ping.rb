@@ -5,12 +5,14 @@ module Pinger
   class Ping < Sequel::Model
     
     many_to_one :uri, :class => URI
-    one_to_one  :alert
+    one_to_one  :alert, :key => "ping_id"
     
+    plugin :association_dependencies, :alert => :destroy
     plugin :timestamps
 
     def request!
       perform_request
+      compare_against(previous_ping) if previous_ping
     end
     
     def stats
@@ -25,7 +27,27 @@ module Pinger
     def summary
       "#{created_at.formatted} - #{uri.uri} finished in #{response_time} seconds with status #{status}"
     end
+    
+    def compare_against(ping)
+      if self.status != ping.status
+        alert!(:status, self.status, ping.status)
+      end
+    end
+    
+    def previous_ping
+      @previous_ping ||= Pinger::Ping.order(:id).where("id < #{self.id}").last
+    end
 
+    def alert!(type, current, previous)
+      subject = case type
+        when :status
+          "Status Changed from #{previous} to #{current}"
+        else
+          "Pinger Alert"
+   	  end
+   	  Pinger::Alert.create(:ping => self, :subject => subject)
+    end
+    
     private
     
       def perform_request
