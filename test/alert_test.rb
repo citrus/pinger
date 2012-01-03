@@ -34,15 +34,10 @@ class AlertTest < MiniTest::Unit::TestCase
   
     def setup
       super
-      Pinger::Ping.dataset.destroy
       Mail::TestMailer.deliveries = []
       @count = Pinger::Alert.count
       @ping1 = uri.request!
       stub_request(:get, TEST_URI).to_return(:status => 301)
-    end
-    
-    def teardown
-      stub_request(:get, TEST_URI).to_return(:status => 200)
     end
     
     should "be created when ping status changes" do

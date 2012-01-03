@@ -23,6 +23,7 @@ module MiniTest
   class Unit
     class TestCase    
       def setup
+        Pinger::Ping.dataset.destroy
         stub_request(:get, TEST_URI).to_return(:status => 200)
       end
     end

@@ -49,12 +49,21 @@ class PingTest < MiniTest::Unit::TestCase
     should "return ping stats" do
       assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s"  ].join(", "), @ping.stats
     end
+        
+    should "create a status change alert" do
+      @ping.request!
+      stub_request(:get, TEST_URI).to_return(:status => 301)
+      ping2 = uri.request!
+      assert !ping2.alert.nil?
+      assert_equal "Status changed from 200 to 301", ping2.alert.subject
+    end
     
-    should "create the default alert" do
-      ping2 = Pinger::Ping.create(:uri_id => uri.id)
-      ping2.update(:status => 422)
-      @ping.alert!(:default, @ping, ping2)
-      assert_equal "Pinger Alert", @ping.alert.subject
+    should "create a response time alert" do
+      @ping.request!
+      @ping.update(:response_time => 10)
+      ping2 = uri.request!
+      assert !ping2.alert.nil?
+      assert_equal "Unusual response time difference. #{ping2.response_time} vs #{@ping.response_time} (#{ping2.response_time_difference}s)", ping2.alert.subject
     end
     
     should "return ping summary" do

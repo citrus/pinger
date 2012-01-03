@@ -12,7 +12,7 @@ module Pinger
 
     def request!
       perform_request
-      compare_against(previous_ping) if previous_ping
+      compare_to_previous if previous_ping
     end
     
     def stats
@@ -28,24 +28,33 @@ module Pinger
       "#{created_at.formatted} - #{uri.uri} finished in #{response_time} seconds with status #{status}"
     end
     
-    def compare_against(ping)
-      if self.status != ping.status
-        alert!(:status, self.status, ping.status)
-      end
+    def compare_to_previous
+      alert!(:status) if status_changed?
+      alert!(:response_time) if Pinger.config["allowed_response_time_difference"].to_f < response_time_difference
     end
     
     def previous_ping
       @previous_ping ||= Pinger::Ping.order(:id).where("id < #{self.id}").last
     end
 
-    def alert!(type, current, previous)
+    def alert!(type)
       subject = case type
         when :status
-          "Status changed from #{previous} to #{current}"
-        else
-          "Pinger Alert"
+          "Status changed from #{previous_ping.status} to #{self.status}"
+        when :response_time
+          "Unusual response time difference. #{response_time} vs #{previous_ping.response_time} (#{response_time_difference}s)"
    	  end
+   	  return if subject.nil?
    	  Pinger::Alert.create(:ping => self, :subject => subject)
+    end
+    
+    def status_changed?
+      self.status != previous_ping.status
+    end
+    
+    def response_time_difference
+      return 0 unless previous_ping
+      @response_time_difference ||= (previous_ping.response_time - response_time).abs
     end
     
     private

@@ -43,6 +43,7 @@ class URITest < MiniTest::Unit::TestCase
   context "An existing uri" do
     
     def setup
+      super
       Pinger::URI.dataset.destroy
       @uri = Pinger::URI.find_or_create(:uri => TEST_URI)
     end

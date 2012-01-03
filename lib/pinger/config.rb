@@ -8,11 +8,12 @@ module Pinger
     
     def self.defaults
       {
-        "database_url"            => "sqlite://pinger.db",
-        "email_to"                => "pinger.alert@example.com",
-        "email_from"              => "pinger@example.com",
-        "delivery_method"         => :sendmail,
-        "delivery_method_options" => {}
+        "database_url"                     => "sqlite://pinger.db",
+        "email_to"                         => "pinger.alert@example.com",
+        "email_from"                       => "pinger@example.com",
+        "delivery_method"                  => :sendmail,
+        "delivery_method_options"          => {},
+        "allowed_response_time_difference" => 2
       }
     end
     
