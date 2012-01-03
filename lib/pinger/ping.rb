@@ -41,7 +41,7 @@ module Pinger
     def alert!(type, current, previous)
       subject = case type
         when :status
-          "Status Changed from #{previous} to #{current}"
+          "Status changed from #{previous} to #{current}"
         else
           "Pinger Alert"
    	  end

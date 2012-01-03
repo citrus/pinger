@@ -17,9 +17,9 @@ module Pinger
         to   Pinger.config["email_to"]
         from Pinger.config["email_from"]
       end
-      mail[:subject] = self.subject
+      mail[:subject] = [ uri.uri, self.subject ].join(" - ")
       mail[:body]    = self.ping.summary
-      mail.deliver!
+      puts "#{FormattedTime.new.formatted} - mail sent to #{mail.to.join(", ")}" if mail.deliver!
     end
     
   end
