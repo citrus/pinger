@@ -18,6 +18,14 @@ class URITest < MiniTest::Unit::TestCase
     assert_equal [ :id, :uri, :scheme, :userinfo, :host, :port, :registry, :path, :opaque, :query, :fragment, :request_uri, :created_at ], Pinger::URI.columns
   end
   
+  should "have many pings" do
+    assert Pinger::URI.new.respond_to?(:pings)
+  end
+  
+  should "have many alerts" do
+    assert Pinger::URI.new.respond_to?(:alerts)
+  end
+  
   should "validate uri" do
     %w(255.255.255.277 0.0.0.256 .com invalid. http://in\ valid.com).each do |i|
       uri = Pinger::URI.new(:uri => i)

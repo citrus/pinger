@@ -5,6 +5,7 @@ module Pinger
   class Ping < Sequel::Model
     
     many_to_one :uri, :class => URI
+    one_to_one  :alert
     
     plugin :timestamps
 
@@ -18,7 +19,7 @@ module Pinger
     
     def created_at
       t = values[:created_at]
-      FormattedTime.at(t.to_i) unless t.nil?
+      FormattedTime.at(t) unless t.nil?
     end
     
     def summary

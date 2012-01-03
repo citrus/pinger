@@ -59,16 +59,27 @@ module Pinger
         end
       end
       
+      unless db.table_exists?(:alerts)
+        db.create_table :alerts do
+          primary_key :id
+          foreign_key :uri_id,  :uris,  :key => :id
+          foreign_key :ping_id, :pings, :key => :id
+          DateTime    :created_at
+          index       :created_at
+        end
+      end
+      
     end
     
     def reset_database!
-      db.drop_table(:pings, :uris)
+      db.drop_table(:alerts, :pings, :uris)
       create_schema
     end
     
     def require_models
       require "pinger/uri"
       require "pinger/ping"
+      require "pinger/alert"
     end
       
     def init!

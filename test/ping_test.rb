@@ -18,6 +18,14 @@ class PingTest < MiniTest::Unit::TestCase
     assert_equal [ :id, :uri_id, :status, :response, :response_time, :created_at ], Pinger::Ping.columns
   end
   
+  should "belong to uri" do
+    assert Pinger::Ping.new.respond_to?(:uri)
+  end
+  
+  should "have one alert" do
+    assert Pinger::Ping.new.respond_to?(:alert)
+  end
+  
   should "save ping to database" do
     ping = Pinger::Ping.new(:uri_id => uri.id)
     assert ping.save
