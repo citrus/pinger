@@ -9,16 +9,19 @@ class ConfigTest < MiniTest::Unit::TestCase
   should "subclass hash" do
     assert Pinger::Config.ancestors.include?(Hash)
   end
-  
-  should "include database url and notification email in config hash" do
-    assert !@config["database_url"].nil?
-    assert !@config["email_to"].nil?
-  end
-  
+    
   should "include pinger config defaults" do
     Pinger::Config.defaults.each do |k, v|
       assert !@config[k].nil?
     end
+  end
+  
+  should "initialize config in pinger lib" do
+    assert Pinger.config.is_a?(Hash)
+  end
+  
+  should "configure mail during initialization" do
+    assert_equal :test, Pinger.config["delivery_method"]
   end
   
   context "When a non existent config file is specified" do
