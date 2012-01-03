@@ -34,7 +34,9 @@ class ConfigTest < MiniTest::Unit::TestCase
   end
   
   should "configure mail during initialization" do
-    assert_equal :test, Pinger.config["delivery_method"]
+    hash = {}
+    assert_equal :test, Pinger.config[:delivery_method]
+    assert_equal hash, Pinger.config[:delivery_method_options]
   end
   
   context "When a non existent config file is specified" do

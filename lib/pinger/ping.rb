@@ -30,7 +30,7 @@ module Pinger
     
     def compare_to_previous
       alert!(:status) if status_changed?
-      alert!(:response_time) if Pinger.config["allowed_response_time_difference"].to_f < response_time_difference
+      alert!(:response_time) if Pinger.config[:allowed_response_time_difference].to_f < response_time_difference
     end
     
     def previous_ping

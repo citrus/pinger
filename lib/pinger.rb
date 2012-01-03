@@ -16,7 +16,7 @@ module Pinger
     def connection
       return @connection if @connection
       begin
-        @connection = Sequel.connect(config["database_url"])
+        @connection = Sequel.connect(config[:database_url])
       rescue Exception => e
         puts "*" * 88
         puts "Error while connecting to database"

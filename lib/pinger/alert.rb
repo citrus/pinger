@@ -14,8 +14,8 @@ module Pinger
     
     def notify
       mail = Mail.new do
-        to   Pinger.config["email_to"]
-        from Pinger.config["email_from"]
+        to   Pinger.config[:email_to]
+        from Pinger.config[:email_from]
       end
       mail[:subject] = [ uri.uri, self.subject ].join(" - ")
       mail[:body]    = self.ping.summary

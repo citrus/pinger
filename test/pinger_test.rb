@@ -22,13 +22,13 @@ class PingerTest < MiniTest::Unit::TestCase
   context "When a non invalid database url is provided" do
   
     def setup
-      @db_url = Pinger.config["database_url"]
-      Pinger.config["database_url"] = "invalid://"
+      @db_url = Pinger.config[:database_url]
+      Pinger.config[:database_url] = "invalid://"
       Pinger.instance_variable_set("@connection", nil)
     end
     
     def teardown
-      Pinger.config["database_url"] = @db_url
+      Pinger.config[:database_url] = @db_url
       Pinger.instance_variable_set("@connection", nil)
       Pinger.connect
     end
