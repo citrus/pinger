@@ -29,6 +29,7 @@ class PingerTest < MiniTest::Unit::TestCase
     
     def teardown
       Pinger.config["database_url"] = @db_url
+      Pinger.instance_variable_set("@connection", nil)
       Pinger.connect
     end
     

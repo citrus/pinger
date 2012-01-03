@@ -12,7 +12,13 @@ class ConfigTest < MiniTest::Unit::TestCase
   
   should "include database url and notification email in config hash" do
     assert !@config["database_url"].nil?
-    assert !@config["notify"].nil?
+    assert !@config["email_to"].nil?
+  end
+  
+  should "include pinger config defaults" do
+    Pinger::Config.defaults.each do |k, v|
+      assert !@config[k].nil?
+    end
   end
   
   context "When a non existent config file is specified" do
@@ -25,6 +31,7 @@ class ConfigTest < MiniTest::Unit::TestCase
     
     def teardown
       ENV["PINGER_CONFIG"] = @config_path
+      Pinger.instance_variable_set("@config", nil)
       Pinger.config
     end
     

@@ -1,2 +1,2 @@
 database_url: <%= ENV["PINGER_TEST_DB"] || "sqlite://test/db/pinger.db" %>
-notify: <%= ENV["PINGER_TEST_EMAIL"] || "pinger.alert@example.com" %>
+email_to: <%= ENV["PINGER_TEST_EMAIL"] %>
