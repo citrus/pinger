@@ -1,7 +1,7 @@
 require "test_helper"
 
 def uri
-  @uri ||= Pinger::URI.find_or_create(:uri => "http://www.google.com")
+  @uri ||= Pinger::URI.find_or_create(:uri => TEST_URI)
 end
 
 class AlertTest < MiniTest::Unit::TestCase
@@ -33,17 +33,13 @@ class AlertTest < MiniTest::Unit::TestCase
   context "When a uri's status changes" do
   
     def setup
+      super
       Mail::TestMailer.deliveries = []
       @count = Pinger::Alert.count
       @ping1 = uri.request!
-      uri.set(:uri => "google.com").save
+      stub_request(:get, TEST_URI).to_return(:status => 301)
     end
-    
-    def teardown
-      uri.destroy
-      @uri = nil
-    end
-    
+        
     should "be created when ping status changes" do
       ping2 = uri.request!
       alert = Pinger::Alert.order(:id).last

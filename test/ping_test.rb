@@ -1,7 +1,7 @@
 require "test_helper"
 
 def uri
-  @uri ||= Pinger::URI.find_or_create(:uri => "http://www.google.com")
+  @uri ||= Pinger::URI.find_or_create(:uri => TEST_URI)
 end
 
 class PingTest < MiniTest::Unit::TestCase
@@ -35,6 +35,7 @@ class PingTest < MiniTest::Unit::TestCase
   context "An existing ping for a valid uri" do
     
     def setup
+      super
       @ping = Pinger::Ping.create(:uri_id => uri.id)
     end
 

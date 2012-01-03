@@ -35,7 +35,7 @@ class URITest < MiniTest::Unit::TestCase
   end
   
   should "save uri to database" do
-    uri = Pinger::URI.new(:uri => "http://example.com")
+    uri = Pinger::URI.new(:uri => TEST_URI)
     assert uri.save
     assert !uri.created_at.nil?
   end
@@ -44,7 +44,7 @@ class URITest < MiniTest::Unit::TestCase
     
     def setup
       Pinger::URI.dataset.destroy
-      @uri = Pinger::URI.find_or_create(:uri => "http://example.com")
+      @uri = Pinger::URI.find_or_create(:uri => TEST_URI)
     end
     
     should "request and create ping" do

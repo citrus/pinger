@@ -5,7 +5,7 @@ def bin
   @bin ||= File.expand_path("../../bin/pinger", __FILE__)
 end
 
-def setup_uri(uri="http://example.com")
+def setup_uri(uri=TEST_URI)
   @uri ||= Pinger::URI.find_or_create(:uri => uri) 
 end
 
@@ -111,9 +111,9 @@ class CliTest < MiniTest::Unit::TestCase
     end
      
     should "add uri to database" do
-      assert Pinger::URI.find(:uri => "http://example.com").nil?
-      out = Pinger::CLI::Commands.add("http://example.com")
-      assert !Pinger::URI.find(:uri => "http://example.com").nil?
+      assert Pinger::URI.find(:uri => TEST_URI).nil?
+      out = Pinger::CLI::Commands.add(TEST_URI)
+      assert !Pinger::URI.find(:uri => TEST_URI).nil?
       assert_equal "http://example.com was successfully added to pinger", out
     end
      
@@ -128,7 +128,7 @@ class CliTest < MiniTest::Unit::TestCase
     
     should "not allow duplicate uris to be added" do
       setup_uri
-      out = Pinger::CLI::Commands.add("http://example.com")
+      out = Pinger::CLI::Commands.add(TEST_URI)
       assert_equal "http://example.com already exists in pinger", out
     end
     
@@ -141,15 +141,15 @@ class CliTest < MiniTest::Unit::TestCase
     end
     
     should "remove uri from database" do
-      assert !Pinger::URI.find(:uri => "http://example.com").nil?
-      out = Pinger::CLI::Commands.rm("http://example.com")
-      assert Pinger::URI.find(:uri => "http://example.com").nil?
+      assert !Pinger::URI.find(:uri => TEST_URI).nil?
+      out = Pinger::CLI::Commands.rm(TEST_URI)
+      assert Pinger::URI.find(:uri => TEST_URI).nil?
       assert_equal "http://example.com was successfully removed from pinger", out
     end
     
     should "not allow non-existant uris to be removed" do
       Pinger::URI.dataset.destroy
-      out = Pinger::CLI::Commands.rm("http://example.com")
+      out = Pinger::CLI::Commands.rm(TEST_URI)
       assert_equal "http://example.com doesn't exist in pinger", out
     end
     
@@ -167,7 +167,7 @@ class CliTest < MiniTest::Unit::TestCase
     end
 
     should "show uri" do
-      out = Pinger::CLI::Commands.show("http://example.com")
+      out = Pinger::CLI::Commands.show(TEST_URI)
       assert_match /^http:\/\/example.com\n/, out
       assert_match Regexp.new("#{@uri.pings.count} pings since #{@uri.created_at.formatted}"), out
       assert out.include?(@uri.pings.map(&:stats).join("\n"))
@@ -187,7 +187,7 @@ class CliTest < MiniTest::Unit::TestCase
     end
 
     should "ping uri" do
-      out = Pinger::CLI::Commands.ping("http://example.com")
+      out = Pinger::CLI::Commands.ping(TEST_URI)
       ping = Pinger::Ping.order(:id).last
       assert_equal ping.summary, out
     end
