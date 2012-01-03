@@ -68,7 +68,7 @@ Usage
 Here's the run down:
 
     pinger help       # Shows pinger's usage
-    pinger stats      # Shows stats for pings and uris
+    pinger stats      # Shows stats for pings, alerts and uris
     pinger batch      # Runs a ping test for all uris in pinger's database
     pinger list       # Lists all uris in pinger's database
     pinger add URI    # Add a uri to pinger's database

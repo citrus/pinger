@@ -90,7 +90,7 @@ class CliTest < MiniTest::Unit::TestCase
       
       should "return stats for uri and pings" do
         out = Pinger::CLI::Commands.stats
-        assert_equal "0 pings on 3 uris", out
+        assert_equal "0 pings and 0 alerts on 3 uris", out
       end
 
       should "list all commands in pinger help menu" do

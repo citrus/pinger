@@ -39,7 +39,7 @@ module Pinger
       end
       
       def stats
-        "#{Pinger::Ping.count} pings on #{Pinger::URI.count} uris"     
+        "#{Pinger::Ping.count} pings and #{Pinger::Alert.count} alerts on #{Pinger::URI.count} uris"     
       end
 
       def batch
@@ -100,7 +100,7 @@ OUT
 Welcome to pinger! Here's the rundown:
 
   pinger help       # Shows pinger's usage
-  pinger stats      # Shows stats for pings and uris
+  pinger stats      # Shows stats for pings, alerts and uris
   pinger batch      # Runs a ping test for all uris in pinger's database
   pinger list       # Lists all uris in pinger's database
   pinger add URI    # Add a uri to pinger's database
