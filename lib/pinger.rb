@@ -28,7 +28,11 @@ module Pinger
     alias :db :connection
     
     def config
-      @config ||= Pinger::Config.new(ENV["PINGER_CONFIG"])
+      @config ||= Pinger::Config.new(config_path)
+    end
+    
+    def config_path
+      @config_path ||= ENV["PINGER_CONFIG"] || File.expand_path("~/.pinger.yml")
     end
     
     def connect

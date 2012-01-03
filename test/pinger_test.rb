@@ -19,6 +19,24 @@ class PingerTest < MiniTest::Unit::TestCase
     assert Pinger.db.table_exists?(:pings)
   end
   
+  context "When pinger config path isn't present" do
+  
+    def setup
+      super
+      clear_pinger_config
+      ENV["PINGER_CONFIG"] = nil      
+    end
+    
+    def teardown
+      reset_pinger_config
+    end
+      
+    should "default pinger config path" do
+      assert_equal File.expand_path("~/.pinger.yml"), Pinger.config_path
+    end
+    
+  end
+  
   context "When a non invalid database url is provided" do
   
     def setup

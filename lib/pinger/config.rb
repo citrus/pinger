@@ -20,7 +20,7 @@ module Pinger
     
     def initialize(_path)
       @path = _path
-      if File.exists?(path)
+      if !@path.nil? && File.exists?(path)
         read_yaml
       else
         raise Pinger::ConfigError, "Could not find config file at #{path}"
@@ -54,7 +54,7 @@ module Pinger
           result
         }
       end
-    
+            
       def read_yaml
         loaded = YAML::load(ERB.new(IO.read(path)).result)
         loaded.reject!{|k, v| v.nil? || v.to_s.length == 0 }
