@@ -26,7 +26,7 @@ Future Goals
 Configuration
 -------------
 
-Pinger needs to be setup before doing its job. By default, pinger will look for your config file at `~/.pinger.yml`. You can customize your config path by setting PINGER_CONFIG in your environment.
+Pinger needs to be setup before doing its job. Pinger will look for your config file at `ENV["PINGER_CONFIG"]` or `~/.pinger.yml` by default.
 
 Here's the available options and their defaults:
     
@@ -45,7 +45,21 @@ You'll probably at least want to overwrite `database_url` and `email_to` in your
     email_to: your-email@your-host.com
     
 
-We're using [mail](https://github.com/mikel/mail) for email delivery. Here's a [link to the available delivery methods](https://github.com/mikel/mail/tree/master/lib/mail/network/delivery_methods).
+We're using [mail](https://github.com/mikel/mail) for email delivery. To use a different delivery method just set the proper variables in your config file. Here's an example for using gmail:
+
+    # ~/.pinger.yml
+    delivery_method: :smtp
+    delivery_method_options:
+      address:              "smtp.gmail.com"
+      port:                 587
+      domain:               "example.com"
+      user_name:            "email@example.com"
+      password:             "password"
+      authentication:       "plain"
+      enable_starttls_auto: true
+
+
+Here's a link to [mail's delivery methods](https://github.com/mikel/mail/tree/master/lib/mail/network/delivery_methods).
 
 
 Usage
