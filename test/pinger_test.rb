@@ -2,18 +2,12 @@ require "test_helper"
 
 class PingerTest < MiniTest::Unit::TestCase
 
+  should "read config file and initialize config" do  
+    assert Pinger.config.is_a?(Pinger::Config)
+  end
+    
   should "establish database connection" do
     assert !Pinger.connection.nil?
-  end
-  
-  should "raise database error when invalid database url is provided" do
-    db_url = ENV["PINGER_DB"]
-    Pinger.instance_variable_set("@connection", nil)
-    ENV["PINGER_DB"] = "invalid://"
-    assert_raises Pinger::DatabaseError do
-      Pinger.connect
-    end
-    ENV["PINGER_DB"] = db_url
   end
 
   should "alias connection to Pinger.db" do  
@@ -23,6 +17,27 @@ class PingerTest < MiniTest::Unit::TestCase
   should "create schema on init" do
     assert Pinger.db.table_exists?(:uris)
     assert Pinger.db.table_exists?(:pings)
+  end
+  
+  context "When a non invalid database url is provided" do
+  
+    def setup
+      @db_url = Pinger.config["database_url"]
+      Pinger.config["database_url"] = "invalid://"
+      Pinger.instance_variable_set("@connection", nil)
+    end
+    
+    def teardown
+      Pinger.config["database_url"] = @db_url
+      Pinger.connect
+    end
+    
+    should "raise config error" do
+      assert_raises Pinger::DatabaseError do
+        Pinger.connect
+      end
+    end
+    
   end
   
 end

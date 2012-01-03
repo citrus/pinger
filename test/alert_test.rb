@@ -22,7 +22,7 @@ class AlertTest < MiniTest::Unit::TestCase
     assert Pinger::Alert.new.respond_to?(:uri)
   end
   
-  should "belong to uri" do
+  should "belong to ping" do
     assert Pinger::Alert.new.respond_to?(:ping)
   end
   
@@ -33,7 +33,6 @@ class AlertTest < MiniTest::Unit::TestCase
       @alert = Pinger::Alert.create(:uri => uri, :ping => @ping)
     end
 
-        
   end
   
 end

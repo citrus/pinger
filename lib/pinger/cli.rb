@@ -67,15 +67,11 @@ module Pinger
       
       def rm(uri=nil)
         if record = Pinger::URI.find(:uri => uri)
-          if record.destroy
-            "#{uri} was successfully removed from pinger"
-          else
-            "#{uri} could not be removed from pinger"
-          end
-        else     
+          record.destroy
+          "#{uri} was successfully removed from pinger"
+        else    
           "#{uri} doesn't exist in pinger"
         end
-
       end
       
       def ping(uri=nil)

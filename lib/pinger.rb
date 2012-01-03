@@ -1,17 +1,22 @@
 require "sequel"
+require "pony"
+
 require "pinger/version"
 require "pinger/formatted_time"
+require "pinger/config"
 require "pinger/batch"
 
 module Pinger
-  class Pinger::DatabaseError < StandardError; end
-  
+
+  class DatabaseError < StandardError; end
+  class ConfigError   < StandardError; end
+   
   class << self
     
     def connection
       return @connection if @connection
       begin
-        @connection = Sequel.connect ENV["PINGER_DB"]
+        @connection = Sequel.connect(config["database_url"])
       rescue Exception => e
         puts "*" * 88
         puts "Error while connecting to database"
@@ -21,6 +26,10 @@ module Pinger
       @connection
     end
     alias :db :connection
+    
+    def config
+      @config ||= Pinger::Config.new(ENV["PINGER_CONFIG"])
+    end
     
     def connect
       raise Pinger::DatabaseError if connection.nil?
@@ -83,6 +92,7 @@ module Pinger
     end
       
     def init!
+      config
       connect
       create_schema
       require_models
