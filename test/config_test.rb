@@ -20,6 +20,19 @@ class ConfigTest < MiniTest::Unit::TestCase
     assert Pinger.config.is_a?(Hash)
   end
   
+  should "convert all keys to symbols" do
+    assert_equal [ Symbol ], Pinger.config.keys.map(&:class).uniq
+  end
+  
+  should "access value with string or symbol" do
+    assert_equal Pinger.config[:database_url], Pinger.config["database_url"]
+  end
+  
+  should "convert keys to symbols when storing" do
+    Pinger.config["something"] = "nothing"
+    assert Pinger.config.keys.include?(:something)
+  end
+  
   should "configure mail during initialization" do
     assert_equal :test, Pinger.config["delivery_method"]
   end

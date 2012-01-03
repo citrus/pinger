@@ -1,3 +1,4 @@
+require "pp"
 require "erb"
 require "yaml"
 
@@ -8,12 +9,12 @@ module Pinger
     
     def self.defaults
       {
-        "database_url"                     => "sqlite://pinger.db",
-        "email_to"                         => "pinger.alert@example.com",
-        "email_from"                       => "pinger@example.com",
-        "delivery_method"                  => :sendmail,
-        "delivery_method_options"          => {},
-        "allowed_response_time_difference" => 2
+        :database_url                     => "sqlite://pinger.db",
+        :email_to                         => "pinger.alert@example.com",
+        :email_from                       => "pinger@example.com",
+        :delivery_method                  => :sendmail,
+        :delivery_method_options          => {},
+        :allowed_response_time_difference => 2
       }
     end
     
@@ -28,16 +29,40 @@ module Pinger
       self
     end
     
+    def []=(key, value)
+      store(key.to_sym, value)
+    end
+    
+    def [](key)
+      fetch(key.to_sym)
+    end
+    
     private
+    
+      # Stolen from rails 
+      def symbolize_keys(hash)
+        hash.inject({}){|result, (key, value)|
+          new_key   = case key  
+                      when String then key.to_sym  
+                      else key  
+                      end  
+          new_value = case value
+                      when Hash then symbolize_keys(value)
+                      else value
+                      end  
+          result[new_key] = new_value  
+          result
+        }
+      end
     
       def read_yaml
         loaded = YAML::load(ERB.new(IO.read(path)).result)
         loaded.reject!{|k, v| v.nil? || v.to_s.length == 0 }
-        merge! Pinger::Config.defaults.merge(loaded)
+        merge! symbolize_keys(Pinger::Config.defaults.merge(loaded))
       end
     
       def configure_mail
-        options = [ fetch("delivery_method"), fetch("delivery_method_options") ]
+        options = [ fetch(:delivery_method), fetch(:delivery_method_options) ]
         Mail.defaults do
         	delivery_method *options
         end
