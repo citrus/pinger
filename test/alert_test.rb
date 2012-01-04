@@ -5,7 +5,7 @@ def template_path(dir)
 end
 
 def render_erb(dir, ping, previous_ping)
-  template = File.join(template_path(dir), "#{ping.alert.type}.erb")
+  template = File.join(template_path(dir), "#{ping.alerts.first.type}.erb")
   ERB.new(File.read(template)).result(binding).strip
 end
 

@@ -5,9 +5,9 @@ module Pinger
   class Ping < Sequel::Model
     
     many_to_one :uri, :class => URI
-    one_to_one  :alert, :key => "ping_id"
+    one_to_many :alerts, :key => "ping_id"
     
-    plugin :association_dependencies, :alert => :destroy
+    plugin :association_dependencies, :alerts => :destroy
     plugin :timestamps
 
     def request!
@@ -86,9 +86,6 @@ module Pinger
         
         self.response_time = (Time.now.to_f - time).round(3)
         
-        #STDOUT << "\n\n\n"
-        #STDOUT << @response.inspect
-                
         unless @response.nil?
           self.status        = @response.code.to_i
           self.response      = @response.body
@@ -97,10 +94,6 @@ module Pinger
           # bad request
           self.status = 400
         end
-        
-        #STDOUT << "\n\n\n"
-        #STDOUT << self.inspect
-        #STDOUT << "\n\n\n"
         
         self.save ? self : false
       end

@@ -18,8 +18,8 @@ class PingTest < MiniTest::Unit::TestCase
     assert Pinger::Ping.new.respond_to?(:uri)
   end
   
-  should "have one alert" do
-    assert Pinger::Ping.new.respond_to?(:alert)
+  should "have many alerts" do
+    assert Pinger::Ping.new.respond_to?(:alerts)
   end
   
   should "save ping to database" do
@@ -66,22 +66,22 @@ class PingTest < MiniTest::Unit::TestCase
     should "create a status change alert" do
       stub_request(:get, TEST_URI).to_return(:status => 301)
       ping2 = uri.request!
-      assert !ping2.alert.nil?
-      assert_equal "Status changed from 200 to 301", ping2.alert.subject
+      assert !ping2.alerts.empty?
+      assert_equal "Status changed from 200 to 301", ping2.alerts.first.subject
     end
     
     should "create a response time alert" do
       @ping.update(:response_time => 10)
       ping2 = uri.request!
-      assert !ping2.alert.nil?
-      assert_equal "Unusual response time difference; #{ping2.response_time_difference}s", ping2.alert.subject
+      assert !ping2.alerts.empty?
+      assert_equal "Unusual response time difference; #{ping2.response_time_difference}s", ping2.alerts.first.subject
     end
     
     should "create a response size alert" do
       @ping.update(:response_size => 1)
       ping2 = uri.request!
-      assert !ping2.alert.nil?
-      assert_equal "Unusual response size difference; #{ping2.response_size_difference_kb}kb", ping2.alert.subject
+      assert !ping2.alerts.empty?
+      assert_equal "Unusual response size difference; #{ping2.response_size_difference_kb}kb", ping2.alerts.first.subject
     end
     
     should "return ping summary" do
