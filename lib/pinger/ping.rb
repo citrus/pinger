@@ -75,7 +75,10 @@ module Pinger
         end
         
         self.response_time = (Time.now.to_f - time).round(3)
-            
+        
+        #STDOUT << "\n\n\n"
+        #STDOUT << @response.inspect
+                
         unless @response.nil?
           self.status        = @response.code.to_i
           self.response      = @response.body
@@ -84,6 +87,10 @@ module Pinger
           # bad request
           self.status = 400
         end
+        
+        #STDOUT << "\n\n\n"
+        #STDOUT << self.inspect
+        #STDOUT << "\n\n\n"
         
         self.save ? self : false
       end

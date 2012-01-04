@@ -12,15 +12,21 @@ module Pinger
       self.ping.uri rescue nil
     end
     
-    def notify
-      mail = Mail.new do
-        to   Pinger.config[:email_to]
-        from Pinger.config[:email_from]
-      end
-      mail[:subject] = [ uri.uri, self.subject ].join(" - ")
-      mail[:body]    = self.ping.summary
-      puts "#{FormattedTime.new.formatted} - mail sent to #{mail.to.join(", ")}" if mail.deliver!
+    def type
+      values[:type].to_sym unless values[:type].nil?
     end
     
+    private
+    
+      def notify
+        mail = Mail.new do
+          to   Pinger.config[:email_to]
+          from Pinger.config[:email_from]
+        end
+        mail[:subject] = [ uri.uri, self.subject ].join(" - ")
+        mail[:body]    = self.ping.summary
+        puts "#{FormattedTime.new.formatted} - mail sent to #{mail.to.join(", ")}" if mail.deliver!
+      end
+      
   end
 end

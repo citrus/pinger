@@ -11,7 +11,7 @@ class AlertTest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :ping_id, :subject, :created_at ], Pinger::Alert.columns
+    assert_equal [ :id, :ping_id, :type, :subject, :message, :created_at ], Pinger::Alert.columns
   end
       
   should "belong to uri" do
@@ -25,7 +25,7 @@ class AlertTest < MiniTest::Unit::TestCase
     assert alert.respond_to?(:ping)
     assert alert.ping.nil?
   end
-  
+    
   context "When a uri's status changes" do
   
     def setup
@@ -59,13 +59,17 @@ class AlertTest < MiniTest::Unit::TestCase
     def setup
       super
       @ping  = uri.request!
-      @alert = Pinger::Alert.create(:ping => @ping)
+      @alert = Pinger::Alert.create(:ping => @ping, :type => "status")
     end
     
     should "access uri through ping" do
       assert @ping.uri, @alert.uri
     end
-
+    
+    should "return type as symbol" do
+      assert_equal Symbol, @alert.type.class
+    end
+    
   end
   
 end

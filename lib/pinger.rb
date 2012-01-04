@@ -77,7 +77,9 @@ module Pinger
         db.create_table :alerts do
           primary_key :id
           foreign_key :ping_id, :pings, :key => :id
+          String      :type
           String      :subject
+          column      :message, :text
           DateTime    :created_at
           index       :created_at
         end
