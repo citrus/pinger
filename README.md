@@ -70,10 +70,13 @@ Here's the run down:
     pinger help       # Shows pinger's usage
     pinger stats      # Shows stats for pings, alerts and uris
     pinger batch      # Runs a ping test for all uris in pinger's database
+    pinger flush      # Deletes pings and alerts for all uris
+    pinger config     # Displays pinger's current configuration
     pinger list       # Lists all uris in pinger's database
+    
     pinger add URI    # Add a uri to pinger's database
-    pinger remove URI # Remove the uri from pinger's database
-    pinger ping URI   # Test the uri
+    pinger rm URI     # Remove a uri from pinger's database
+    pinger ping URI   # Run a ping test for a uri
     pinger show URI   # Show details for a uri
 
 

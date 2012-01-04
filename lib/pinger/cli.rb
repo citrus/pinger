@@ -117,9 +117,10 @@ Welcome to pinger! Here's the rundown:
   pinger flush      # Deletes pings and alerts for all uris
   pinger config     # Displays pinger's current configuration
   pinger list       # Lists all uris in pinger's database
+  
   pinger add URI    # Add a uri to pinger's database
-  pinger rm URI     # Remove the uri from pinger's database
-  pinger ping URI   # Test the uri
+  pinger rm URI     # Remove a uri from pinger's database
+  pinger ping URI   # Run a ping test for a uri
   pinger show URI   # Show details for a uri
 
 HELP
