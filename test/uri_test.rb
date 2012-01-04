@@ -53,12 +53,16 @@ class URITest < MiniTest::Unit::TestCase
       assert_equal 1, Pinger::Ping.count
     end
     
+    should "return id as to_param" do
+      assert_equal @uri.id, @uri.to_param
+    end
+    
     should "be deleted" do
       count = Pinger::URI.count
       @uri.destroy
       assert_equal count - 1, Pinger::URI.count
     end
-    
+            
   end
   
 end

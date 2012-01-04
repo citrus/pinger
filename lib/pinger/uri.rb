@@ -40,6 +40,10 @@ module Pinger
     def raise_on_failure?(opts={})
       false
     end
+    
+    def to_param
+      id
+    end
 
     private
     

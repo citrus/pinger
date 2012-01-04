@@ -57,6 +57,10 @@ module Pinger
       @response_time_difference ||= (previous_ping.response_time - response_time).abs
     end
     
+    def to_param
+      id
+    end
+    
     private
     
       def perform_request

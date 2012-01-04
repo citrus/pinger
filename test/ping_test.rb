@@ -70,6 +70,10 @@ class PingTest < MiniTest::Unit::TestCase
       assert_equal "#{@ping.created_at.formatted} - #{@ping.uri.uri} finished in #{@ping.response_time} seconds with status #{@ping.status}", @ping.summary
     end
     
+    should "return id as to_param" do
+      assert_equal @ping.id, @ping.to_param
+    end
+    
     should "be deleted" do
       count = Pinger::Ping.count
       @ping.destroy
