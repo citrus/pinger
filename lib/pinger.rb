@@ -8,9 +8,10 @@ require "pinger/batch"
 
 module Pinger
 
-  class DatabaseError < StandardError; end
-  class ConfigError   < StandardError; end
-   
+  class DatabaseError    < StandardError; end
+  class ConfigError      < StandardError; end
+  class TemplateNotFound < StandardError; end
+  
   class << self
     
     def connection
@@ -66,8 +67,8 @@ module Pinger
           foreign_key :uri_id, :uris, :key => :id
           Integer     :status
           column      :response, :text
-          Float       :response_time
-          Integer     :response_size       
+          Float       :response_time, :default => 0
+          Integer     :response_size, :default => 0       
           DateTime    :created_at
           index       :created_at
         end

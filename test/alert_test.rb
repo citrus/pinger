@@ -1,5 +1,14 @@
 require "test_helper"
 
+def template_path(dir)
+  File.expand_path("../../lib/pinger/templates/#{dir}", __FILE__)
+end
+
+def render_erb(dir, ping, previous_ping)
+  template = File.join(template_path(dir), "#{ping.alert.type}.erb")
+  ERB.new(File.read(template)).result(binding).strip
+end
+
 class AlertTest < MiniTest::Unit::TestCase
   
   should "be a sequel model" do        
@@ -25,7 +34,7 @@ class AlertTest < MiniTest::Unit::TestCase
     assert alert.respond_to?(:ping)
     assert alert.ping.nil?
   end
-    
+      
   context "When a uri's status changes" do
   
     def setup
@@ -58,16 +67,35 @@ class AlertTest < MiniTest::Unit::TestCase
   
     def setup
       super
-      @ping  = uri.request!
-      @alert = Pinger::Alert.create(:ping => @ping, :type => "status")
+      @ping1 = uri.request!
+      @ping2 = uri.request!
+      @alert = Pinger::Alert.create(:ping => @ping2, :type => "status")
     end
     
     should "access uri through ping" do
-      assert @ping.uri, @alert.uri
+      assert @ping1.uri, @alert.uri
     end
     
     should "return type as symbol" do
       assert_equal Symbol, @alert.type.class
+    end
+    
+    should "raise template error when template cannot be found" do
+      @alert.update(:type => "unknown")
+      assert_raises Pinger::TemplateNotFound do
+        @alert.build_against(@ping1)
+      end    
+    end
+    
+    %w(status response_time response_size).each do |type|
+            
+      should "render erb templates for type #{type}" do
+        @alert.update(:type => type)
+        @alert.build_against(@ping1)
+        assert_equal render_erb(:subject, @ping2, @ping1), @alert.subject
+        assert_equal render_erb(:message, @ping2, @ping1), @alert.message
+      end
+      
     end
     
   end

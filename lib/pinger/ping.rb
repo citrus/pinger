@@ -31,6 +31,7 @@ module Pinger
     def compare_to_previous
       alert!(:status) if status_changed?
       alert!(:response_time) if Pinger.config[:allowed_response_time_difference].to_f < response_time_difference
+      alert!(:response_size) if Pinger.config[:allowed_response_size_difference].to_f < response_size_difference
     end
     
     def previous_ping
@@ -38,14 +39,10 @@ module Pinger
     end
 
     def alert!(type)
-      subject = case type
-        when :status
-          "Status changed from #{previous_ping.status} to #{self.status}"
-        when :response_time
-          "Unusual response time difference. #{response_time} vs #{previous_ping.response_time} (#{response_time_difference}s)"
-   	  end
-   	  return if subject.nil?
-   	  Pinger::Alert.create(:ping => self, :subject => subject)
+      alert = Pinger::Alert.create(:ping => self, :type => type)
+      alert.build_against(previous_ping)
+      alert.deliver! if Pinger.config[:deliver_alerts]
+      alert
     end
     
     def status_changed?
@@ -55,6 +52,15 @@ module Pinger
     def response_time_difference
       return 0 unless previous_ping
       @response_time_difference ||= (previous_ping.response_time - response_time).abs
+    end
+    
+    def response_size_difference
+      return 0 unless previous_ping
+      @response_size_difference ||= (previous_ping.response_size - response_size).abs
+    end
+    
+    def response_size_difference_kb
+      (response_size_difference / 1024.0).round(3)
     end
     
     def response_size_kb

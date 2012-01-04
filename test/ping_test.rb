@@ -27,7 +27,7 @@ class PingTest < MiniTest::Unit::TestCase
     assert ping.save
     assert !ping.created_at.nil?
   end
-    
+      
   context "An existing ping for a valid uri" do
     
     def setup
@@ -53,6 +53,12 @@ class PingTest < MiniTest::Unit::TestCase
       assert_equal 12.695, @ping.response_size_kb
     end
     
+    should "calculate response size difference" do
+      @ping.update(:response_size => 1024)
+      @ping2 = uri.request!
+      assert_equal 11.695, @ping2.response_size_difference_kb
+    end
+    
     should "return ping stats" do
       assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s", "#{@ping.response_size_kb}kb"  ].join(", "), @ping.stats
     end
@@ -68,7 +74,14 @@ class PingTest < MiniTest::Unit::TestCase
       @ping.update(:response_time => 10)
       ping2 = uri.request!
       assert !ping2.alert.nil?
-      assert_equal "Unusual response time difference. #{ping2.response_time} vs #{@ping.response_time} (#{ping2.response_time_difference}s)", ping2.alert.subject
+      assert_equal "Unusual response time difference; #{ping2.response_time_difference}s", ping2.alert.subject
+    end
+    
+    should "create a response size alert" do
+      @ping.update(:response_size => 1)
+      ping2 = uri.request!
+      assert !ping2.alert.nil?
+      assert_equal "Unusual response size difference; #{ping2.response_size_difference_kb}kb", ping2.alert.subject
     end
     
     should "return ping summary" do
