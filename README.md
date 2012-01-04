@@ -31,11 +31,14 @@ Pinger needs to be setup before doing its job. Pinger will look for your config 
 Here's the available options and their defaults:
     
     :database_url                     => "sqlite://pinger.db",
+    :template_path                    => File.expand_path("../templates", __FILE__),
     :email_to                         => "pinger.alert@example.com",
     :email_from                       => "pinger@example.com",
+    :deliver_alerts                   => true,
     :delivery_method                  => :sendmail,
     :delivery_method_options          => {},
-    :allowed_response_time_difference => 2
+    :allowed_response_time_difference => 3,
+    :allowed_response_size_difference => 1024
     
 
 You'll probably at least want to overwrite `database_url` and `email_to` in your yml file:

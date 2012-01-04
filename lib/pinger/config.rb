@@ -15,7 +15,7 @@ module Pinger
         :deliver_alerts                   => true,
         :delivery_method                  => :sendmail,
         :delivery_method_options          => {},
-        :allowed_response_time_difference => 2,
+        :allowed_response_time_difference => 3,
         :allowed_response_size_difference => 1024
       }
     end
