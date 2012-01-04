@@ -12,7 +12,7 @@ class CliTest < MiniTest::Unit::TestCase
   end
 
   should "return utility commands" do
-    assert_equal %w(list stats batch flush help), Pinger::CLI::UTILITY_COMMANDS
+    assert_equal %w(list stats batch flush config help), Pinger::CLI::UTILITY_COMMANDS
   end
 
   should "return uri commands" do
@@ -38,6 +38,18 @@ class CliTest < MiniTest::Unit::TestCase
     Pinger::CLI::COMMANDS.each do |command|
       assert Pinger::CLI::Commands.respond_to?(command), "Pinger::Commands should respond to #{command}"
     end
+  end
+  
+  should "list all commands in pinger help menu" do
+    out = Pinger::CLI::Commands.help
+    Pinger::CLI::COMMANDS.each do |command|
+      assert out.include?("pinger #{command}"), "#{command} was not found in the help menu"
+    end
+  end
+  
+  should "show pinger config" do
+    out = Pinger::CLI::Commands.config
+    
   end
   
   should "normalize uri for uri commands" do
@@ -77,21 +89,13 @@ class CliTest < MiniTest::Unit::TestCase
       end
       
       should "flush pings from database" do
-        count = Pinger::Ping.count
         out = Pinger::CLI::Commands.flush
-        assert_match "deleted #{count} pings from pinger's database", out 
+        assert_match "deleted 0 alerts and 0 pings from pinger's database", out 
       end
       
       should "return stats for uri and pings" do
         out = Pinger::CLI::Commands.stats
         assert_equal "0 pings and 0 alerts on 3 uris", out
-      end
-
-      should "list all commands in pinger help menu" do
-        out = Pinger::CLI::Commands.help
-        Pinger::CLI::COMMANDS.each do |command|
-          out.include?(command)
-        end
       end
 
     end

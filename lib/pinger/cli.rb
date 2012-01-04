@@ -4,7 +4,7 @@ module Pinger
 
   module CLI
   
-    UTILITY_COMMANDS = %w(list stats batch flush help)
+    UTILITY_COMMANDS = %w(list stats batch flush config help)
     URI_COMMANDS     = %w(add rm show ping) 
     COMMANDS         = UTILITY_COMMANDS + URI_COMMANDS
  
@@ -50,9 +50,21 @@ module Pinger
       end
       
       def flush
-        count = Pinger::Ping.count
+        count1 = Pinger::Alert.count
+        count2 = Pinger::Ping.count
+        Pinger::Alert.dataset.destroy
         Pinger::Ping.dataset.destroy
-        "deleted #{count} pings from pinger's database"
+        "deleted #{count1} alerts and #{count2} pings from pinger's database"
+      end
+      
+      def config
+        outs = [ "Pinger Configuration", "=" * 65 ]
+        min = (Pinger.config.keys.sort_by(&:length).last.length + 3)
+        Pinger.config.each do |k, v|
+          diff = min - k.length
+          outs << [ k, v ].join(" " * diff)
+        end
+        outs.join("\n")
       end
 
       def add(uri=nil)
@@ -102,9 +114,11 @@ Welcome to pinger! Here's the rundown:
   pinger help       # Shows pinger's usage
   pinger stats      # Shows stats for pings, alerts and uris
   pinger batch      # Runs a ping test for all uris in pinger's database
+  pinger flush      # Deletes pings and alerts for all uris
+  pinger config     # Displays pinger's current configuration
   pinger list       # Lists all uris in pinger's database
   pinger add URI    # Add a uri to pinger's database
-  pinger remove URI # Remove the uri from pinger's database
+  pinger rm URI     # Remove the uri from pinger's database
   pinger ping URI   # Test the uri
   pinger show URI   # Show details for a uri
 
