@@ -16,7 +16,7 @@ module Pinger
     end
     
     def stats
-      [ created_at.formatted, status, "#{response_time}s"  ].join(", ")
+      [ created_at.formatted, status, "#{response_time}s", "#{response_size_kb}kb" ].join(", ")
     end
     
     def created_at
@@ -25,7 +25,7 @@ module Pinger
     end
     
     def summary
-      "#{created_at.formatted} - #{uri.uri} finished in #{response_time} seconds with status #{status}"
+      "#{created_at.formatted} - #{uri.uri} downloaded #{response_size_kb}kb in #{response_time} seconds with status #{status}"
     end
     
     def compare_to_previous
@@ -55,6 +55,10 @@ module Pinger
     def response_time_difference
       return 0 unless previous_ping
       @response_time_difference ||= (previous_ping.response_time - response_time).abs
+    end
+    
+    def response_size_kb
+      (response_size / 1024.0).round(3)
     end
     
     def to_param

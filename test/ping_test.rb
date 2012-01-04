@@ -32,29 +32,32 @@ class PingTest < MiniTest::Unit::TestCase
     
     def setup
       super
+      @body = "Hello World! " * 1000
+      @body_size = @body.bytesize
+      stub_request(:get, TEST_URI).to_return(:body => @body, :status => 200)
       @ping = Pinger::Ping.create(:uri_id => uri.id)
+      @ping.request!
     end
 
     should "send request and save response" do
-      @ping.request!
       ping = Pinger::Ping.order(:id).last
       assert_equal 200, ping.status
       assert_equal @ping.response_time, ping.response_time
     end
     
     should "save response size" do
-      # 10 bytes
-      stub_request(:get, TEST_URI).to_return(:body => "0123456789", :status => 200)
-      @ping.request!
-      assert_equal 10, @ping.response_size
+      assert_equal @body_size, @ping.response_size
+    end
+    
+    should "convert response size to kb" do
+      assert_equal 12.695, @ping.response_size_kb
     end
     
     should "return ping stats" do
-      assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s"  ].join(", "), @ping.stats
+      assert_equal [ @ping.created_at.formatted, @ping.status, "#{@ping.response_time}s", "#{@ping.response_size_kb}kb"  ].join(", "), @ping.stats
     end
         
     should "create a status change alert" do
-      @ping.request!
       stub_request(:get, TEST_URI).to_return(:status => 301)
       ping2 = uri.request!
       assert !ping2.alert.nil?
@@ -62,7 +65,6 @@ class PingTest < MiniTest::Unit::TestCase
     end
     
     should "create a response time alert" do
-      @ping.request!
       @ping.update(:response_time => 10)
       ping2 = uri.request!
       assert !ping2.alert.nil?
@@ -70,7 +72,7 @@ class PingTest < MiniTest::Unit::TestCase
     end
     
     should "return ping summary" do
-      assert_equal "#{@ping.created_at.formatted} - #{@ping.uri.uri} finished in #{@ping.response_time} seconds with status #{@ping.status}", @ping.summary
+      assert_equal "#{@ping.created_at.formatted} - #{@ping.uri.uri} downloaded #{@ping.response_size_kb}kb in #{@ping.response_time} seconds with status #{@ping.status}", @ping.summary
     end
     
     should "return id as to_param" do
