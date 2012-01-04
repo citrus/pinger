@@ -16,6 +16,10 @@ class ConfigTest < MiniTest::Unit::TestCase
     end
   end
   
+  should "set default template directory" do
+    assert_equal File.expand_path("../../lib/pinger/templates", __FILE__), Pinger::Config.default_template_directory
+  end
+  
   should "initialize config in pinger lib" do
     assert Pinger.config.is_a?(Hash)
   end

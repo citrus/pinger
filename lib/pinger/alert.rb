@@ -32,13 +32,20 @@ module Pinger
     private
     
       def render_erb(dir, previous_ping)
-        path = File.join(Pinger.config[:template_path], dir.to_s)
-        template = File.join(path, "#{type}.erb")
-        if File.exists?(template)
-          ERB.new(File.read(template)).result(binding).strip
-        else
-          raise Pinger::TemplateNotFound, "Could not find #{type}.erb in #{path}"
+        paths = [
+          Pinger.config[:template_path],
+          Pinger::Config.default_template_directory
+        ]
+        paths.uniq.each do |path|
+          path = File.join(path, dir.to_s)
+          @template = File.join(path, "#{type}.erb")
+          if File.exists?(@template)
+            @out = ERB.new(File.read(@template)).result(binding).strip
+            break
+          end
         end
+        raise Pinger::TemplateNotFound, "Could not find #{type}.erb in paths:\n#{paths}" if @out.nil?
+        @out
       end
     
   end

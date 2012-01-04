@@ -7,7 +7,7 @@ require "pinger/config"
 require "pinger/batch"
 
 module Pinger
-
+  
   class DatabaseError    < StandardError; end
   class ConfigError      < StandardError; end
   class TemplateNotFound < StandardError; end

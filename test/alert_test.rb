@@ -87,6 +87,13 @@ class AlertTest < MiniTest::Unit::TestCase
       end    
     end
     
+    should "revert to default template when template is not found in config path" do
+      Pinger.config[:template_path] = File.expand_path("/some/non/existent/path")
+      @alert.build_against(@ping1)
+      assert_equal render_erb(:subject, @ping2, @ping1), @alert.subject
+      assert_equal render_erb(:message, @ping2, @ping1), @alert.message
+    end
+    
     %w(status response_time response_size).each do |type|
             
       should "render erb templates for type #{type}" do

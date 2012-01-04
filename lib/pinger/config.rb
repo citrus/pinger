@@ -9,7 +9,7 @@ module Pinger
     def self.defaults
       {
         :database_url                     => "sqlite://pinger.db",
-        :template_path                    => File.expand_path("../templates", __FILE__),
+        :template_path                    => default_template_directory,
         :email_to                         => "pinger.alert@example.com",
         :email_from                       => "pinger@example.com",
         :deliver_alerts                   => true,
@@ -18,6 +18,10 @@ module Pinger
         :allowed_response_time_difference => 3,
         :allowed_response_size_difference => 1024
       }
+    end
+    
+    def self.default_template_directory
+      File.expand_path("../templates", __FILE__)
     end
     
     def initialize(_path)
