@@ -41,12 +41,12 @@ class AlertTest < MiniTest::Unit::TestCase
       super
       Mail::TestMailer.deliveries = []
       @count = Pinger::Alert.count
-      @ping1 = uri.request!
+      @ping1 = uri.ping!
       stub_request(:get, TEST_URI).to_return(:status => 301)
     end
     
     should "be created when ping status changes" do
-      ping2 = uri.request!
+      ping2 = uri.ping!
       alert = Pinger::Alert.order(:id).last
       assert_equal @count + 1, Pinger::Alert.count
       assert_equal 1, uri.alerts.count
@@ -55,7 +55,7 @@ class AlertTest < MiniTest::Unit::TestCase
     
     should "send mail when alert is created" do
       count = Mail::TestMailer.deliveries.length
-      ping2 = uri.request!
+      ping2 = uri.ping!
       alert = Pinger::Alert.order(:id).last
       assert_equal count + 1, Mail::TestMailer.deliveries.length
       assert_equal "#{uri.uri} - #{alert.subject}", Mail::TestMailer.deliveries.last.subject
@@ -67,8 +67,8 @@ class AlertTest < MiniTest::Unit::TestCase
   
     def setup
       super
-      @ping1 = uri.request!
-      @ping2 = uri.request!
+      @ping1 = uri.ping!
+      @ping2 = uri.ping!
       @alert = Pinger::Alert.create(:ping => @ping2, :type => "status")
     end
     

@@ -9,7 +9,7 @@ module Pinger
     
     def process
       uris.each do |uri|
-        ping = uri.request!
+        ping = uri.ping!
         puts ping.summary
       end
     end

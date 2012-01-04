@@ -31,7 +31,7 @@ module Pinger
       FormattedTime.at(t) unless t.nil?
     end
         
-    def request!
+    def ping!
       ping = Pinger::Ping.create(:uri => self)
       ping.request!
       ping

@@ -44,7 +44,7 @@ class URITest < MiniTest::Unit::TestCase
     end
     
     should "request and create ping" do
-      uri.request!
+      uri.ping!
       assert_equal 1, Pinger::Ping.count
     end
     

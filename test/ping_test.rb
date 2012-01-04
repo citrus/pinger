@@ -73,7 +73,7 @@ class PingTest < MiniTest::Unit::TestCase
     
     should "calculate response size difference" do
       @ping.update(:response_size => 1024)
-      @ping2 = uri.request!
+      @ping2 = uri.ping!
       assert_equal 11.695, @ping2.response_size_difference_kb
     end
     
@@ -83,21 +83,21 @@ class PingTest < MiniTest::Unit::TestCase
         
     should "create a status change alert" do
       stub_request(:get, TEST_URI).to_return(:status => 301)
-      ping2 = uri.request!
+      ping2 = uri.ping!
       assert !ping2.alerts.empty?
       assert_equal "Status changed from 200 to 301", ping2.alerts.first.subject
     end
     
     should "create a response time alert" do
       @ping.update(:response_time => 10)
-      ping2 = uri.request!
+      ping2 = uri.ping!
       assert !ping2.alerts.empty?
       assert_equal "Unusual response time difference; #{ping2.response_time_difference}s", ping2.alerts.first.subject
     end
     
     should "create a response size alert" do
       @ping.update(:response_size => 1)
-      ping2 = uri.request!
+      ping2 = uri.ping!
       assert !ping2.alerts.empty?
       assert_equal "Unusual response size difference; #{ping2.response_size_difference_kb}kb", ping2.alerts.first.subject
     end

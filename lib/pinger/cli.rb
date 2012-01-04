@@ -89,8 +89,7 @@ module Pinger
       def ping(uri=nil)
         record = find_uri(uri)
         return uri_not_found(uri) if record.nil?
-        ping = Pinger::Ping.create(:uri => record)
-        ping.request!
+        ping = record.ping!
         ping.summary
       end
       
