@@ -1,9 +1,5 @@
 require "test_helper"
 
-def uri
-  @uri ||= Pinger::URI.find_or_create(:uri => TEST_URI)
-end
-
 class PingTest < MiniTest::Unit::TestCase
 
   should "be a sequel model" do        
@@ -15,7 +11,7 @@ class PingTest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :uri_id, :status, :response, :response_time, :created_at ], Pinger::Ping.columns
+    assert_equal [ :id, :uri_id, :status, :response, :response_time, :response_size, :created_at ], Pinger::Ping.columns
   end
   
   should "belong to uri" do
@@ -44,6 +40,13 @@ class PingTest < MiniTest::Unit::TestCase
       ping = Pinger::Ping.order(:id).last
       assert_equal 200, ping.status
       assert_equal @ping.response_time, ping.response_time
+    end
+    
+    should "save response size" do
+      # 10 bytes
+      stub_request(:get, TEST_URI).to_return(:body => "0123456789", :status => 200)
+      @ping.request!
+      assert_equal 10, @ping.response_size
     end
     
     should "return ping stats" do
@@ -85,6 +88,7 @@ class PingTest < MiniTest::Unit::TestCase
   context "And existing ping for an unreachable uri" do
     
     def setup
+      super
       uri.set(:uri => "http://localhost:11111").save
       @ping = Pinger::Ping.create(:uri_id => uri.id)
       @ping.request!

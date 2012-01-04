@@ -66,7 +66,8 @@ module Pinger
           foreign_key :uri_id, :uris, :key => :id
           Integer     :status
           column      :response, :text
-          Float       :response_time          
+          Float       :response_time
+          Integer     :response_size       
           DateTime    :created_at
           index       :created_at
         end

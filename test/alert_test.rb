@@ -1,9 +1,5 @@
 require "test_helper"
 
-def uri
-  @uri ||= Pinger::URI.find_or_create(:uri => TEST_URI)
-end
-
 class AlertTest < MiniTest::Unit::TestCase
   
   should "be a sequel model" do        
@@ -61,6 +57,7 @@ class AlertTest < MiniTest::Unit::TestCase
   context "With and existing alert" do
   
     def setup
+      super
       @ping  = uri.request!
       @alert = Pinger::Alert.create(:ping => @ping)
     end

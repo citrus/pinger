@@ -24,8 +24,10 @@ module MiniTest
     class TestCase    
       
       def setup
+        Pinger::Alert.dataset.destroy
         Pinger::Ping.dataset.destroy
-        stub_request(:get, TEST_URI).to_return(:status => 200)
+        Pinger::URI.dataset.destroy
+        stub_request(:get, TEST_URI).to_return(:body => "<h1>Hello Pinger!</h1>", :status => 200)
       end
       
       def clear_pinger_config
@@ -38,6 +40,10 @@ module MiniTest
         ENV["PINGER_CONFIG"] = PINGER_CONFIG
       end
       
+      def uri
+        @uri ||= Pinger::URI.find_or_create(:uri => TEST_URI)
+      end
+
     end
   end
 end

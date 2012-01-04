@@ -5,10 +5,6 @@ def bin
   @bin ||= File.expand_path("../../bin/pinger", __FILE__)
 end
 
-def setup_uri(uri=TEST_URI)
-  @uri ||= Pinger::URI.find_or_create(:uri => uri) 
-end
-
 class CliTest < MiniTest::Unit::TestCase
   
   should "be executable" do
@@ -54,10 +50,6 @@ class CliTest < MiniTest::Unit::TestCase
   
   context "When listing uris" do
     
-    def setup
-      Pinger::URI.dataset.destroy
-    end
-    
     should "list uris and show empty message" do
       out = Pinger::CLI::Commands.list
       assert_equal "No uris have been added to pinger. Add a uri with `pinger add URI`", out
@@ -66,12 +58,14 @@ class CliTest < MiniTest::Unit::TestCase
     context "With some existing uris" do
     
       def setup
-        Pinger::URI.dataset.destroy
+        super
         3.times do |i|
-          Pinger::URI.create(:uri => "http://v#{i}.example.com")
+          i = "http://v#{i}.example.com"
+          Pinger::URI.create(:uri => i)
+          stub_request(:get, i).to_return(:body => "<h1>Hello #{i}!</h1>", :status => 200)
         end
       end
-    
+      
       should "list uris" do
         out = Pinger::CLI::Commands.list
         assert_equal "http://v0.example.com\nhttp://v1.example.com\nhttp://v2.example.com", out
@@ -105,11 +99,7 @@ class CliTest < MiniTest::Unit::TestCase
   end
   
   context "When adding uris" do
-    
-    def setup
-      Pinger::URI.dataset.destroy
-    end
-     
+         
     should "add uri to database" do
       assert Pinger::URI.find(:uri => TEST_URI).nil?
       out = Pinger::CLI::Commands.add(TEST_URI)
@@ -127,7 +117,7 @@ class CliTest < MiniTest::Unit::TestCase
     end
     
     should "not allow duplicate uris to be added" do
-      setup_uri
+      assert !uri.nil?
       out = Pinger::CLI::Commands.add(TEST_URI)
       assert_equal "http://example.com already exists in pinger", out
     end
@@ -137,7 +127,8 @@ class CliTest < MiniTest::Unit::TestCase
   context "When removing uris" do
     
     def setup
-      setup_uri 
+      super
+      assert !uri.nil?
     end
     
     should "remove uri from database" do
@@ -158,7 +149,8 @@ class CliTest < MiniTest::Unit::TestCase
   context "When showing a uri" do
   
     def setup
-      setup_uri 
+      super
+      assert !uri.nil?
     end
 
     should "show warning when uri doesn't exist" do
@@ -178,7 +170,8 @@ class CliTest < MiniTest::Unit::TestCase
   context "When pinging a uri" do
 
     def setup
-      setup_uri
+      super
+      assert !uri.nil?
     end
 
     should "show warning when uri doesn't exist" do

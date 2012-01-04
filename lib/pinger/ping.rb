@@ -75,10 +75,11 @@ module Pinger
         end
         
         self.response_time = (Time.now.to_f - time).round(3)
-        
+            
         unless @response.nil?
-          self.status = @response.code.to_i
-          self.response = @response.body
+          self.status        = @response.code.to_i
+          self.response      = @response.body
+          self.response_size = @response.body.bytesize
         else
           # bad request
           self.status = 400

@@ -2,10 +2,6 @@ require "test_helper"
 
 class URITest < MiniTest::Unit::TestCase
 
-  def setup
-    Pinger::URI.dataset.destroy
-  end
-
   should "be a sequel model" do        
     assert Pinger::URI.ancestors.include?(Sequel::Model)
   end
@@ -28,38 +24,37 @@ class URITest < MiniTest::Unit::TestCase
   
   should "validate uri" do
     %w(255.255.255.277 0.0.0.256 .com invalid. http://in\ valid.com).each do |i|
-      uri = Pinger::URI.new(:uri => i)
-      valid = uri.valid? rescue false
+      @uri = Pinger::URI.new(:uri => i)
+      valid = @uri.valid? rescue false
       assert !valid
     end
   end
   
   should "save uri to database" do
-    uri = Pinger::URI.new(:uri => TEST_URI)
-    assert uri.save
-    assert !uri.created_at.nil?
+    @uri = Pinger::URI.new(:uri => TEST_URI)
+    assert @uri.save
+    assert !@uri.created_at.nil?
   end
   
   context "An existing uri" do
     
     def setup
       super
-      Pinger::URI.dataset.destroy
-      @uri = Pinger::URI.find_or_create(:uri => TEST_URI)
+      assert !uri.nil?
     end
     
     should "request and create ping" do
-      @uri.request!
+      uri.request!
       assert_equal 1, Pinger::Ping.count
     end
     
     should "return id as to_param" do
-      assert_equal @uri.id, @uri.to_param
+      assert_equal uri.id, uri.to_param
     end
     
     should "be deleted" do
       count = Pinger::URI.count
-      @uri.destroy
+      uri.destroy
       assert_equal count - 1, Pinger::URI.count
     end
             
