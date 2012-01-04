@@ -73,12 +73,19 @@ module Pinger
     
     private
     
+      def http_request
+        return @http_request if @http_request
+        @http_request = Net::HTTP::Get.new uri.request_uri
+        @http_request["Cache-Control"] = "no-cache"
+        @http_request["User-Agent"]    = "Pinger v#{Pinger::VERSION}"
+        @http_request
+      end
+    
       def perform_request
         time = Time.now.to_f
         begin
           Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
-            request = Net::HTTP::Get.new uri.request_uri
-            @response = http.request(request)
+            @response = http.request(http_request)
           end
         rescue Exception => e
           # bad request...

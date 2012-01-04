@@ -22,12 +22,30 @@ class PingTest < MiniTest::Unit::TestCase
     assert Pinger::Ping.new.respond_to?(:alerts)
   end
   
-  should "save ping to database" do
-    ping = Pinger::Ping.new(:uri_id => uri.id)
-    assert ping.save
-    assert !ping.created_at.nil?
+  context "A new, unsaved ping" do
+    
+    def setup
+      super
+      @ping = Pinger::Ping.new(:uri_id => uri.id)
+      @request = @ping.send(:http_request)
+    end
+    
+    should "save to database and set timestamp" do
+      assert @ping.save
+      assert !@ping.created_at.nil?
+    end
+    
+    should "return http get request" do
+      assert_equal Net::HTTP::Get, @request.class
+    end
+    
+    should "set no cache and user agent headers" do
+      assert_equal "no-cache", @request["cache-control"]
+      assert_equal "Pinger v#{Pinger::VERSION}", @request["user-agent"]
+    end
+  
   end
-      
+  
   context "An existing ping for a valid uri" do
     
     def setup
