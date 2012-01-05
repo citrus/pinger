@@ -50,7 +50,7 @@ class PingTest < MiniTest::Unit::TestCase
     
     def setup
       super
-      @body = "Hello World! " * 1000
+      @body = "Hello World! " * 10
       @body_size = @body.bytesize
       stub_request(:get, TEST_URI).to_return(:body => @body, :status => 200)
       @ping = Pinger::Ping.create(:uri_id => uri.id)
@@ -68,13 +68,31 @@ class PingTest < MiniTest::Unit::TestCase
     end
     
     should "convert response size to kb" do
-      assert_equal 12.695, @ping.response_size_kb
+      assert_equal 0.127, @ping.response_size_kb
     end
     
     should "calculate response size difference" do
       @ping.update(:response_size => 1024)
       @ping2 = uri.ping!
-      assert_equal 11.695, @ping2.response_size_difference_kb
+      assert_equal 0.873, @ping2.response_size_difference_kb
+    end
+    
+    should "calculate response time difference" do
+      @ping.update(:response_time => 10)
+      @ping2 = uri.ping!
+      assert_equal 10.0 - @ping2.response_time, @ping2.response_time_difference
+    end
+    
+    should "find previous ping" do
+      ping2 = uri.ping!
+      assert_equal @ping, ping2.previous_ping
+    end
+    
+    should "ensure previous ping is for the same uri" do
+      uri2 = Pinger::URI.create(:uri => "http://example.org")
+      ping2 = uri2.ping!
+      ping3 = uri.ping!
+      assert_equal @ping, ping3.previous_ping
     end
     
     should "return ping stats" do
@@ -96,7 +114,7 @@ class PingTest < MiniTest::Unit::TestCase
     end
     
     should "create a response size alert" do
-      @ping.update(:response_size => 1)
+      @ping.update(:response_size => 2048)
       ping2 = uri.ping!
       assert !ping2.alerts.empty?
       assert_equal "Unusual response size difference; #{ping2.response_size_difference_kb}kb", ping2.alerts.first.subject
@@ -109,7 +127,7 @@ class PingTest < MiniTest::Unit::TestCase
     should "return id as to_param" do
       assert_equal @ping.id, @ping.to_param
     end
-    
+        
     should "be deleted" do
       count = Pinger::Ping.count
       @ping.destroy

@@ -35,7 +35,7 @@ module Pinger
     end
     
     def previous_ping
-      @previous_ping ||= Pinger::Ping.order(:id).where("id < #{self.id}").last
+      @previous_ping ||= Pinger::Ping.order(:id).limit(1).where("uri_id = #{self.uri_id} AND id < #{self.id}").last
     end
 
     def alert!(type)
