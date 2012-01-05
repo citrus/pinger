@@ -6,6 +6,11 @@ module Pinger
     many_to_one :ping
     plugin :timestamps
     
+    def created_at
+      t = values[:created_at]
+      FormattedTime.at(t) unless t.nil?
+    end
+    
     def uri
       self.ping.uri rescue nil
     end

@@ -127,7 +127,11 @@ class PingTest < MiniTest::Unit::TestCase
     should "return id as to_param" do
       assert_equal @ping.id, @ping.to_param
     end
-        
+    
+    should "convert created_at into FormattedTime" do
+      assert_equal FormattedTime, @ping.created_at.class
+    end 
+            
     should "be deleted" do
       count = Pinger::Ping.count
       @ping.destroy

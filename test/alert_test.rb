@@ -119,6 +119,16 @@ class AlertTest < MiniTest::Unit::TestCase
       end
       
     end
+        
+    should "convert created_at into FormattedTime" do
+      assert_equal FormattedTime, @alert.created_at.class
+    end 
+    
+    should "be deleted" do
+      count = Pinger::Alert.count
+      @alert.destroy
+      assert_equal count - 1, Pinger::Alert.count
+    end
     
   end
   

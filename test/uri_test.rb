@@ -21,7 +21,7 @@ class URITest < MiniTest::Unit::TestCase
   should "have many alerts" do
     assert Pinger::URI.new.respond_to?(:alerts)
   end
-  
+    
   should "validate uri" do
     %w(255.255.255.277 0.0.0.256 .com invalid. http://in\ valid.com).each do |i|
       @uri = Pinger::URI.new(:uri => i)
@@ -51,6 +51,10 @@ class URITest < MiniTest::Unit::TestCase
     should "return id as to_param" do
       assert_equal uri.id, uri.to_param
     end
+    
+    should "convert created_at into FormattedTime" do
+      assert_equal FormattedTime, uri.created_at.class
+    end 
     
     should "be deleted" do
       count = Pinger::URI.count
