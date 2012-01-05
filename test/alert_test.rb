@@ -35,6 +35,21 @@ class AlertTest < MiniTest::Unit::TestCase
     assert alert.ping.nil?
   end
       
+  context "A new, unsaved alert" do
+    
+    def setup
+      super
+      @ping2 = uri.ping!
+      @alert = Pinger::Alert.new(:ping_id => @ping2.id, :type => :status)
+    end
+    
+    should "save to database and set timestamp" do
+      assert @alert.save
+      assert !@alert.created_at.nil?
+    end
+      
+  end
+      
   context "When a uri's status changes" do
   
     def setup

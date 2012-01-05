@@ -2,8 +2,9 @@ require "erb"
 
 module Pinger
   class Alert < Sequel::Model
-        
+    
     many_to_one :ping
+    plugin :timestamps
     
     def uri
       self.ping.uri rescue nil
