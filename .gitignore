@@ -2,6 +2,7 @@
 *.db
 *.log
 .bundle
+.db_urls
 .DS_Store
 coverage
 Gemfile.lock
