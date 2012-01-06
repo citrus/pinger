@@ -56,6 +56,16 @@ class URITest < MiniTest::Unit::TestCase
       assert_equal FormattedTime, uri.created_at.class
     end 
     
+    should "return average response time" do
+      @ping = uri.ping!
+      assert_equal @ping.response_time, uri.average_response_time
+    end
+    
+    should "return average response size" do
+      @ping = uri.ping!
+      assert_equal @ping.response_size, uri.average_response_size
+    end
+    
     should "be deleted" do
       count = Pinger::URI.count
       uri.destroy

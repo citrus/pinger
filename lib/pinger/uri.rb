@@ -44,7 +44,15 @@ module Pinger
     def to_param
       id
     end
-
+    
+    def average_response_time
+      @average_response_time ||= Pinger::Ping.average_response_time(self)
+    end
+    
+    def average_response_size
+      @average_response_size ||= Pinger::Ping.average_response_size(self)
+    end
+    
     private
     
       def parse
