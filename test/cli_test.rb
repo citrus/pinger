@@ -166,8 +166,9 @@ class CliTest < MiniTest::Unit::TestCase
       out = Pinger::CLI::Commands.show(TEST_URI)
       assert_match /^http:\/\/example.com\n/, out
       assert_match Regexp.new("#{@uri.pings.count} pings since #{@uri.created_at.formatted}"), out
+      assert_match Regexp.new("average: #{@uri.average_response_size}kb in #{@uri.average_response_time}s"), out
       assert out.include?(@uri.pings.map(&:stats).join("\n"))
-    end 
+    end
 
   end
 

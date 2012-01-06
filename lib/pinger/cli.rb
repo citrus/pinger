@@ -100,6 +100,7 @@ module Pinger
 #{uri}
 #{'=' * (uri.length + 3)}
 #{record.pings.count} pings since #{record.created_at.formatted}
+average: #{record.average_response_size}kb in #{record.average_response_time}s
 #{'-' * 40}
 OUT
         out << record.pings.reverse.map(&:stats).join("\n")

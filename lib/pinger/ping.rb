@@ -12,12 +12,18 @@ module Pinger
     
     def self.average_response_time(uri=nil)
       ds = uri.nil? ? self : uri.pings_dataset
+      return 0 if ds.empty?
       ds.sum(:response_time) / ds.count
     end
 
     def self.average_response_size(uri=nil)
       ds = uri.nil? ? self : uri.pings_dataset
+      return 0 if ds.empty?
       ds.sum(:response_size) / ds.count
+    end
+
+    def self.average_response_size_kb(uri=nil)
+      (average_response_size(uri) / 1024.0).round(3)
     end
 
     def request!

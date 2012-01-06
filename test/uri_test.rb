@@ -54,16 +54,25 @@ class URITest < MiniTest::Unit::TestCase
     
     should "convert created_at into FormattedTime" do
       assert_equal FormattedTime, uri.created_at.class
-    end 
+    end
     
     should "return average response time" do
+      assert_equal 0, uri.average_response_time
       @ping = uri.ping!
       assert_equal @ping.response_time, uri.average_response_time
     end
     
     should "return average response size" do
+      assert_equal 0, Pinger::Ping.count
+      assert_equal 0, uri.average_response_size
       @ping = uri.ping!
       assert_equal @ping.response_size, uri.average_response_size
+    end
+    
+    should "return average response size in rounded kilobytes" do
+      assert_equal 0, uri.average_response_size_kb
+      @ping = uri.ping!
+      assert_equal @ping.response_size_kb, uri.average_response_size_kb
     end
     
     should "be deleted" do

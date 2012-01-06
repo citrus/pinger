@@ -46,11 +46,15 @@ module Pinger
     end
     
     def average_response_time
-      @average_response_time ||= Pinger::Ping.average_response_time(self)
+      Pinger::Ping.average_response_time(self)
     end
     
     def average_response_size
-      @average_response_size ||= Pinger::Ping.average_response_size(self)
+      Pinger::Ping.average_response_size(self)
+    end
+    
+    def average_response_size_kb
+      (average_response_size / 1024.0).round(3)
     end
     
     private
