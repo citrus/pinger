@@ -154,5 +154,41 @@ class PingTest < MiniTest::Unit::TestCase
     end
         
   end
+  
+  context "Several existing pings" do
+    
+    def setup
+      super
+      @uri2 = Pinger::URI.create(:uri => "http://example.org")
+      3.times { uri.ping! }
+      3.times { @uri2.ping! }
+    end
+    
+    should "return average response time for all pings" do
+      ds = Pinger::Ping.dataset
+      total = ds.sum(:response_time) / ds.count
+      assert_equal total, Pinger::Ping.average_response_time
+    end
+    
+    should "return average response time for a specific uri" do
+      ds = Pinger::Ping.where(:uri_id => uri.id)
+      total = ds.sum(:response_time) / ds.count
+      assert_equal total, Pinger::Ping.average_response_time(uri)
+    end
+  
+    
+    should "return average response size for all pings" do
+      ds = Pinger::Ping.dataset
+      total = ds.sum(:response_size) / ds.count
+      assert_equal total, Pinger::Ping.average_response_size
+    end
+    
+    should "return average response size for a specific uri" do
+      ds = Pinger::Ping.where(:uri_id => uri.id)
+      total = ds.sum(:response_size) / ds.count
+      assert_equal total, Pinger::Ping.average_response_size(uri)
+    end
+  
+  end
 
 end

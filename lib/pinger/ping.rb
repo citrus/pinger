@@ -9,6 +9,16 @@ module Pinger
     
     plugin :association_dependencies, :alerts => :destroy
     plugin :timestamps
+    
+    def self.average_response_time(uri=nil)
+      ds = uri.nil? ? self : uri.pings_dataset
+      ds.sum(:response_time) / ds.count
+    end
+
+    def self.average_response_size(uri=nil)
+      ds = uri.nil? ? self : uri.pings_dataset
+      ds.sum(:response_size) / ds.count
+    end
 
     def request!
       perform_request
