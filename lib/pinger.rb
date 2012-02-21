@@ -66,7 +66,6 @@ module Pinger
           primary_key :id
           foreign_key :uri_id, :uris, :key => :id
           Integer     :status
-          column      :response, :text
           Float       :response_time, :default => 0
           Integer     :response_size, :default => 0       
           DateTime    :created_at

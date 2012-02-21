@@ -17,6 +17,7 @@ class PingerTest < MiniTest::Unit::TestCase
   should "create schema on init" do
     assert Pinger.db.table_exists?(:uris)
     assert Pinger.db.table_exists?(:pings)
+    assert Pinger.db.table_exists?(:alerts)
   end
   
   context "When pinger config path isn't present" do

@@ -11,7 +11,7 @@ class PingTest < MiniTest::Unit::TestCase
   end
   
   should "have proper attributes" do
-    assert_equal [ :id, :uri_id, :status, :response, :response_time, :response_size, :created_at ], Pinger::Ping.columns
+    assert_equal [ :id, :uri_id, :status, :response_time, :response_size, :created_at ], Pinger::Ping.columns
   end
   
   should "belong to uri" do

@@ -111,7 +111,6 @@ module Pinger
         
         unless @response.nil?
           self.status        = @response.code.to_i
-          self.response      = @response.body
           self.response_size = @response.body.bytesize
         else
           # bad request
